@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from typing import Optional
 
+from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
 from src.Novelty.NoveltyName import NoveltyName
@@ -23,7 +24,7 @@ def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     model.save(os.path.join(model_path, filename))
 
 
-def loadModel(novelty_name: NoveltyName):
+def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     # check non-empty folder
     if not os.path.exists(parent_folder):
         return Optional[OffPolicyAlgorithm]
@@ -33,4 +34,4 @@ def loadModel(novelty_name: NoveltyName):
     filenames = os.listdir(model_path)
     if len(filenames) == 0:
         return Optional[OffPolicyAlgorithm]
-    return sorted(filenames, reverse=True)[0]
+    return OffPolicyAlgorithm.load(path=sorted(filenames, reverse=True)[0])
