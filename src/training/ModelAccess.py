@@ -1,4 +1,5 @@
 import os
+import gymnasium as gym
 from datetime import datetime
 from typing import Optional
 
@@ -34,4 +35,6 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     filenames = os.listdir(model_path)
     if len(filenames) == 0:
         return Optional[OffPolicyAlgorithm]
-    return OffPolicyAlgorithm.load(path=sorted(filenames, reverse=True)[0])
+    latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
+    p = os.path.join(parent_folder, novelty_name.name, latest_filename)
+    return SAC.load(path=p, env=gym.make("LunarLander-v2", render_mode="human", continuous=True))
