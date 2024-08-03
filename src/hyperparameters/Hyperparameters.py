@@ -16,11 +16,8 @@ class HyperParameters:
             tau: float = 0.005,
             learning_starts: int = 100,
             use_sde: bool = False,
-            policy_kwargs: Dict[str, Any] = None
     ):
-        if policy_kwargs is None:
-            policy_kwargs = {"log_std_init": -3.67, "net_arch": [64, 64]}
-
+        self.policy_kwargs = {"net_arch": [400, 300]}
         self.n_timesteps = n_timesteps
         self.policy = policy
         self.learning_rate = learning_rate
@@ -33,4 +30,3 @@ class HyperParameters:
         self.tau = tau
         self.learning_starts = learning_starts
         self.use_sde = use_sde
-        self.policy_kwargs = policy_kwargs
