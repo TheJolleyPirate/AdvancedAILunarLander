@@ -1,5 +1,6 @@
 from typing import Dict, Any
 
+
 class HyperParameters:
     def __init__(
             self,
@@ -33,4 +34,3 @@ class HyperParameters:
         self.learning_starts = learning_starts
         self.use_sde = use_sde
         self.policy_kwargs = policy_kwargs
-
