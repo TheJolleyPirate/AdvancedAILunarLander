@@ -7,15 +7,21 @@ from src.training.ModelTraining import trainNewModel, continueTrainingModel
 
 # Set up environment for lunar lander
 env = gym.make("LunarLander-v2", render_mode="human", continuous=True)
+# model = SAC("MlpPolicy", env, verbose=1)
+# model.learn(total_timesteps=int(2e5), progress_bar=True)
+# env = model.get_env()
+# observation = env.reset()
 
-try:
-    model = continueTrainingModel(NoveltyName.ORIGINAL)
-except RuntimeError:
-    model = trainNewModel(env, NoveltyName.ORIGINAL)
-env = model.get_env()
-observation = env.reset()
+for _ in range(10):
+    try:
+        model = continueTrainingModel(NoveltyName.ORIGINAL)
+    except RuntimeError:
+        model = trainNewModel(env, NoveltyName.ORIGINAL)
+    env = model.get_env()
+    observation = env.reset()
 
-for _ in range(1000):
+
+for _ in range(10):
     action, _ = model.predict(observation, deterministic=True)
     observation, reward, done, info = env.step(action)
 

@@ -6,11 +6,11 @@ from src.Novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
-num_episodes = 10_000_000
+num_episodes = 100_000
 
 
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
-    print("Training new model for novelty: " + novelty_name.name)
+    print("Training new model for novelty: " + novelty_name.value)
     params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
     model = SAC(env=env,
                 policy=params.policy,
@@ -30,8 +30,8 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
 
 
 def continueTrainingModel(novelty_name: NoveltyName):
-    print("Retraining model for novelty: " + novelty_name.name)
+    print("Retraining model for novelty: " + novelty_name.value)
     model = loadModel(novelty_name)
-    model.learn(total_timesteps=model.num_timesteps * num_episodes)
+    model.learn(total_timesteps=max(model.num_timesteps, 1) * num_episodes)
     saveModel(model, NoveltyName.ORIGINAL)
     return model
