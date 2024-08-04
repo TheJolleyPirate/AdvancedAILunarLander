@@ -6,7 +6,7 @@ from src.Novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
-num_episodes = 100_000
+num_episodes = 10_000
 
 
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
