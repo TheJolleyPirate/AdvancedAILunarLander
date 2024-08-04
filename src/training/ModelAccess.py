@@ -38,6 +38,6 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     if len(filenames) == 0:
         raise NoModelException(novelty_name)
     latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
-    print(f"fModel loaded: {latest_filename}")
+    print(f"Model loaded: {latest_filename}")
     p = os.path.join(parent_folder, novelty_name.value, latest_filename)
     return SAC.load(path=p, env=gym.make("LunarLander-v2", render_mode="human", continuous=True))
