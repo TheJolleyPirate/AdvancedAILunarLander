@@ -8,8 +8,10 @@ from src.training.ModelAccess import saveModel, loadModel
 
 num_episodes = 10_000_000
 
+
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
-    params = LoadHyperparameters.load("../admin/sac.yml")    # FIXME: not good practice of loading file.
+    print("Training new model for novelty: " + novelty_name.name)
+    params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
     model = SAC(env=env,
                 policy=params.policy,
                 learning_rate=params.learning_rate,
@@ -22,12 +24,13 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
                 gradient_steps=params.gradient_steps,
                 ent_coef=params.ent_coef,
                 policy_kwargs=params.policy_kwargs)
-    model.learn(total_timesteps=model.num_timesteps * num_episodes)
+    model.learn(total_timesteps=model.num_timesteps * num_episodes, progress_bar=True)
     saveModel(model, NoveltyName.ORIGINAL)
     return model
 
 
 def continueTrainingModel(novelty_name: NoveltyName):
+    print("Retraining model for novelty: " + novelty_name.name)
     model = loadModel(novelty_name)
     model.learn(total_timesteps=model.num_timesteps * num_episodes)
     saveModel(model, NoveltyName.ORIGINAL)
