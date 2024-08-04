@@ -3,6 +3,7 @@ import gymnasium as gym
 from stable_baselines3 import SAC
 from stable_baselines3.ppo.policies import MlpPolicy
 from src.Novelty.NoveltyName import NoveltyName
+from src.exceptions.NoModelException import NoModelException
 from src.training.ModelTraining import trainNewModel, continueTrainingModel
 
 # Set up environment for lunar lander
@@ -15,8 +16,9 @@ env = gym.make("LunarLander-v2", render_mode="human", continuous=True)
 for _ in range(10):
     try:
         model = continueTrainingModel(NoveltyName.ORIGINAL)
-    except RuntimeError:
+    except NoModelException:
         model = trainNewModel(env, NoveltyName.ORIGINAL)
+
     env = model.get_env()
     observation = env.reset()
 
@@ -29,6 +31,5 @@ for _ in range(10):
         model = continueTrainingModel(NoveltyName.ORIGINAL)
         env = model.get_env()
         observation = env.reset()
-
 
 env.close()

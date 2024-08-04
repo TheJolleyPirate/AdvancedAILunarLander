@@ -10,7 +10,7 @@ def load(filename: str):
 
             params_dict = yaml.safe_load(file)["LunarLanderContinuous-v2"]
             params = HyperParameters()
-            params.n_timesteps = params_dict["n_timesteps"]
+            # params.n_timesteps = params_dict["n_timesteps"]  # need to parse "!!float 5e5"
             params.policy = params_dict["policy"]
             params.batch_size = params_dict["batch_size"]
             params.learning_rate = params_dict["learning_rate"]
