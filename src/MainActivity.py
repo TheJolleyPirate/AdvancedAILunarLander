@@ -1,13 +1,20 @@
-import gymnasium as gym
+from src.Novelty.NoveltyName import NoveltyName
+from src.training.ModelAccess import loadModel
 
-env = gym.make("LunarLander-v2", render_mode="human")
-observation, info = env.reset()
+# Set up environment for lunar lander
+# env = gym.make("LunarLander-v2", render_mode="human", continuous=True)
 
-for _ in range(1000):
-    action = env.action_space.sample()  # agent policy that uses the observation and info
-    observation, reward, terminated, truncated, info = env.step(action)
+# Load latest trained model
+model = loadModel(NoveltyName.ORIGINAL)
+env = model.get_env()
+observation = env.reset()
 
-    if terminated or truncated:
-        observation, info = env.reset()
+for _ in range(10000):
+    action, _ = model.predict(observation, deterministic=True)
+    observation, reward, done, info = env.step(action)
+
+    if done:
+        env = model.get_env()
+        observation = env.reset()
 
 env.close()
