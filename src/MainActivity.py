@@ -1,8 +1,6 @@
 from stable_baselines3.common.evaluation import evaluate_policy
 from src.Novelty.NoveltyName import NoveltyName
 from src.training.ModelAccess import loadModel
-import numpy as np
-import statistics
 
 
 def main():
@@ -12,11 +10,13 @@ def main():
     model = loadModel(NoveltyName.ORIGINAL)
     env = model.get_env()
 
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=n_eval_episodes)
+    mean_reward, std_reward = evaluate_policy(model=model, env=env, n_eval_episodes=n_eval_episodes)
+    print(f"Number of episodes for evaluation: {n_eval_episodes}")
     print(f"Mean reward for {n_eval_episodes}: {mean_reward}")
     print(f"Standard deviation of rewards: {std_reward}")
 
-    for _ in range(n_eval_episodes):
+    n_presentation_episodes = 10
+    for _ in range(n_presentation_episodes):
         observation = env.reset()
         done = False
         while not done:
