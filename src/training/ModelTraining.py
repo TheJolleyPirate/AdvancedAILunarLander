@@ -28,6 +28,7 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
 
     model.learn(total_timesteps= model.N_TIMESTEPS, progress_bar=True)
     saveModel(model, NoveltyName.ORIGINAL)
+    # saveModel(model, NoveltyName.ATMOSPHERE)
     return model
 
 
@@ -36,4 +37,5 @@ def continueTrainingModel(novelty_name: NoveltyName):
     print("Retraining model for novelty: " + novelty_name.value)
     model.learn(total_timesteps=num_episodes)
     saveModel(model, NoveltyName.ORIGINAL)
+    # saveModel(model, NoveltyName.ATMOSPHERE)
     return model

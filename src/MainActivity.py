@@ -2,13 +2,18 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from src.Novelty.NoveltyName import NoveltyName
 from src.training.ModelAccess import loadModel
 
+from environments.atmosphereEnvironment import AtmosphereLunarLander
 
 def main():
     n_eval_episodes = 100
 
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
-    env = model.get_env()
+    # model = loadModel(NoveltyName.ATMOSPHERE)
+    # env = model.get_env()
+
+    env = AtmosphereLunarLander(render_mode="human", continuous=True)
+    model.set_env(env)
 
     mean_reward, std_reward = evaluate_policy(model=model, env=env, n_eval_episodes=n_eval_episodes)
     print(f"Number of episodes for evaluation: {n_eval_episodes}")
