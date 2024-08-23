@@ -1,9 +1,7 @@
 import os
 
 import gymnasium
-import gymnasium as gym
 from datetime import datetime
-from typing import Optional
 
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
@@ -39,7 +37,7 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     filenames = os.listdir(model_path)
     if len(filenames) == 0:
         raise NoModelException(novelty_name)
-    latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
+    latest_filename = sorted(filenames, reverse=True)[0].removesuffix(".zip")
     print(f"Model loaded: {latest_filename}")
     p = os.path.join(parent_folder, novelty_name.value, latest_filename)
     env = gymnasium.make("LunarLander-v2", render_mode="human", continuous=True)
