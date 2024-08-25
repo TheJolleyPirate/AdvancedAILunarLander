@@ -12,7 +12,7 @@ class TurbulenceEnv(LunarLander):
         self.std = MAIN_ENGINE_POWER * 5
         self.mean = MAIN_ENGINE_POWER * 3
         self.torque_std = MAIN_ENGINE_POWER * 2
-        self.num_raindrop = 50
+        self.num_wind = 50
 
     def render(self):
         if self.screen is None:
@@ -20,16 +20,16 @@ class TurbulenceEnv(LunarLander):
             self.screen = pygame.display.set_mode((VIEWPORT_W, VIEWPORT_H), pygame.DOUBLEBUF)
         super().render()
 
-        # draw raindrops
-        for _ in range(self.num_raindrop):
+        # draw solar wind
+        for _ in range(self.num_wind):
             x_pos = random.randint(0, VIEWPORT_W)
             y_pos = random.randint(0, VIEWPORT_H)
             pygame.draw.line(
                 self.screen,
-                (0, 0, 255),  # Blue color for raindrops
+                (0, 0, 255),
                 (x_pos, y_pos),
                 (x_pos, y_pos + 10),
-                1  # Line width
+                1
             )
 
         pygame.display.flip()
