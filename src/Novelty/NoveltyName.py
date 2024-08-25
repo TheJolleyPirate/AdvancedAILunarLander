@@ -6,3 +6,4 @@ class NoveltyName (Enum):
     # tentative novelty
     HIGHLAND = "highland"
     GRAVITY = "gravity"
+    TURBULENCE = "turbulence"
