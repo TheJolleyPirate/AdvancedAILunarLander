@@ -5,17 +5,19 @@ import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.core import ObsType, RenderFrame
 import numpy as np
-from gymnasium.envs.box2d import LunarLander
+
+from src.novelty.ClonedLunaerLander import CloneLunarLander
 
 
 class LunarEnvironment(gym.Env):
 
     def __init__(self, render_mode="human", continuous: bool = True):
-        self.env: LunarLander = LunarLander(render_mode=render_mode, continuous=continuous)
+        self.env: CloneLunarLander = CloneLunarLander(render_mode=render_mode, continuous=continuous)
         self.render_mode = render_mode
         self.action_space = self.env.action_space
         self._adjust_observation_space()
         self.observe_distance = 0.3
+        self.observed_helipad: bool = False
 
     def _adjust_observation_space(self):
         assert self.env is not None
@@ -40,25 +42,32 @@ class LunarEnvironment(gym.Env):
         state, reward, terminated, truncated, info = self.env.step(action)
         state = state.tolist()
 
-        # get information from
+        # get information from lunar environment
         helipad_x1 = self.env.helipad_x1
         helipad_x2 = self.env.helipad_x2
         helipad_y = self.env.helipad_y
-        pos_x, pos_y = self.env.lander.position
-        diff_x = min(abs(helipad_x1 - pos_x), abs(helipad_x2 - pos_x))
-        diff_y = abs(helipad_y - pos_y)
-        # euclidian distance
-        distance = math.sqrt(diff_x * diff_x + diff_y * diff_y)
-        # update observed status of landing pad
-        if distance <= self.observe_distance:
-            state.append(1)
-        else:
-            state.append(0)
-        state.append(helipad_x1)
-        state.append(helipad_x2)
-        state.append(helipad_y)
-        return np.array(state, dtype=np.float32), reward, terminated, False, info
 
+        if not self.observed_helipad:
+            pos_x, pos_y = self.env.lander.position
+            diff_x = min(abs(helipad_x1 - pos_x), abs(helipad_x2 - pos_x))
+            diff_y = abs(helipad_y - pos_y)
+            # euclidian distance
+            distance = math.sqrt(diff_x * diff_x + diff_y * diff_y)
+            # update observed status of landing pad
+            if distance <= self.observe_distance:
+                state.append(1)
+                self.observed_helipad = True
+            else:
+                state.append(0)
+            state.append(helipad_x1)
+            state.append(helipad_x2)
+            state.append(helipad_y)
+        else:
+            state.append(1)
+            state.append(helipad_x1)
+            state.append(helipad_x2)
+            state.append(helipad_y)
+        return np.array(state, dtype=np.float32), reward, terminated, False, info
 
 
     def reset(
