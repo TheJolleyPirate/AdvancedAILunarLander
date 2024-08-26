@@ -14,11 +14,11 @@ def main():
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
     shape_trained = model.env.observation_space.shape[0]
-    original_env = gymnasium.make("LunarLander-v2", render_mode="human", continuous=True)
-    custom_env = LunarEnvironment()
+    original_env = gymnasium.make("LunarLander-v2", render_mode=None, continuous=True)
+    custom_env = LunarEnvironment(render_mode=None)
     envs = [original_env, custom_env]
     env_names = ["Original", "Custom-Limited Sensor"]
-    for i in range(len(envs)):
+    for i in range(1, len(envs)):
         print(f"Evaluating environment {env_names[i]}")
         evaluate(model, envs[i], 100)
 
