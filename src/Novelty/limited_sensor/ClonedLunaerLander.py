@@ -266,7 +266,11 @@ class CloneLunarLander(gym.Env, EzPickle):
                     "yellow",
                 ),
             )
-        self.helipad_observed: bool = False    # new variable
+        # new variable
+        # ----------
+        self.helipad_observed: bool = False
+        self.fuel: float = 1000
+        # ----------
         self.turbulence_power = turbulence_power
 
         self.enable_wind = enable_wind
@@ -352,6 +356,8 @@ class CloneLunarLander(gym.Env, EzPickle):
     ):
         super().reset(seed=seed)
         self._destroy()
+        self.helipad_observed = False
+        self.fuel = 1000
         self.world.contactListener_keepref = ContactDetector(self)
         self.world.contactListener = self.world.contactListener_keepref
         self.game_over = False
@@ -549,9 +555,8 @@ class CloneLunarLander(gym.Env, EzPickle):
         dispersion = [self.np_random.uniform(-1.0, +1.0) / SCALE for _ in range(2)]
 
         m_power = 0.0
-        if (self.continuous and action[0] > 0.0) or (
-            not self.continuous and action == 2
-        ):
+        if self.fuel > 0 and ((self.continuous and action[0] > 0.0) or (not self.continuous and action == 2)):
+
             # Main engine
             if self.continuous:
                 m_power = (np.clip(action[0], 0.0, 1.0) + 1.0) * 0.5  # 0.5..1.0
@@ -594,9 +599,8 @@ class CloneLunarLander(gym.Env, EzPickle):
             )
 
         s_power = 0.0
-        if (self.continuous and np.abs(action[1]) > 0.5) or (
-            not self.continuous and action in [1, 3]
-        ):
+        if self.fuel > 0 and ((self.continuous and np.abs(action[1]) > 0.5) or
+                              (not self.continuous and action in [1, 3])):
             # Orientation/Side engines
             if self.continuous:
                 direction = np.sign(action[1])
@@ -639,7 +643,8 @@ class CloneLunarLander(gym.Env, EzPickle):
                 impulse_pos,
                 True,
             )
-
+        self.fuel -= m_power
+        self.fuel -= s_power
         self.world.Step(1.0 / FPS, 6 * 30, 2 * 30)
 
         pos = self.lander.position
