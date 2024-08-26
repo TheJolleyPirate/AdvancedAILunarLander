@@ -79,7 +79,7 @@ class ContactDetector(contactListener):
                 self.env.legs[i].ground_contact = False
 
 
-class LunarLander(gym.Env, EzPickle):
+class CloneLunarLander(gym.Env, EzPickle):
     """
     ## Description
     This environment is a classic rocket trajectory optimization problem.
@@ -360,17 +360,29 @@ class LunarLander(gym.Env, EzPickle):
         H = VIEWPORT_H / SCALE
 
         # Create Terrain
-        CHUNKS = 11
+        CHUNKS = 14
         height = self.np_random.uniform(0, H / 2, size=(CHUNKS + 1,))
         chunk_x = [W / (CHUNKS - 1) * i for i in range(CHUNKS)]
-        self.helipad_x1 = chunk_x[CHUNKS // 2 - 1]
-        self.helipad_x2 = chunk_x[CHUNKS // 2 + 1]
+        # Helipad
+        # x
+        chunk_id = math.floor(self.np_random.uniform(0, 1) * CHUNKS)
+        # avoid helipad being at the edges
+        if chunk_id <= CHUNKS - 2:
+            chunk_id -= 1
+        if chunk_id == 0:
+            chunk_id = 1
+
+        self.helipad_x1 = chunk_x[chunk_id]
+        self.helipad_x2 = chunk_x[chunk_id + 1]
+
+        # y
         self.helipad_y = H / 4
-        height[CHUNKS // 2 - 2] = self.helipad_y
-        height[CHUNKS // 2 - 1] = self.helipad_y
-        height[CHUNKS // 2 + 0] = self.helipad_y
-        height[CHUNKS // 2 + 1] = self.helipad_y
-        height[CHUNKS // 2 + 2] = self.helipad_y
+        height[chunk_id] = self.helipad_y
+        height[chunk_id + 1] = self.helipad_y
+        if chunk_id - 1 > 0:
+            height[chunk_id - 1] = self.helipad_y
+        if chunk_id + 2 < CHUNKS:
+            height[chunk_id + 2] = self.helipad_y
         smooth_y = [
             0.33 * (height[i - 1] + height[i + 0] + height[i + 1])
             for i in range(CHUNKS)
