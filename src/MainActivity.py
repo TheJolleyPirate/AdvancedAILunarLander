@@ -18,7 +18,7 @@ def main():
     custom_env = LunarEnvironment(render_mode=None)
     envs = [original_env, custom_env]
     env_names = ["Original", "Custom-Limited Sensor"]
-    for i in range(1, len(envs)):
+    for i in range(len(envs)):
         print(f"Evaluating environment {env_names[i]}")
         evaluate(model, envs[i], 100)
 
@@ -39,8 +39,10 @@ def evaluate(model, env, n_episodes: int = 100):
     mean_reward = round(statistics.mean(rewards), 2)
     std_reward = round(statistics.stdev(rewards), 2)
     print(f"Number of episodes for evaluation: {n_episodes}")
-    print(f"Mean reward for {n_episodes}: {mean_reward}")
-    print(f"Standard deviation of rewards: {std_reward}")
+    print(f"Mean reward: {mean_reward}")
+    print(f"Standard deviation: {std_reward}")
+    print(f"Min: {min(rewards)}")
+    print(f"Max: {max(rewards)}")
 
 
 if __name__ == '__main__':
