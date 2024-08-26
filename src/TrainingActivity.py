@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from time import sleep
 import gymnasium as gym
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 from src.training.ModelTraining import continueTrainingModel, trainNewModel
 

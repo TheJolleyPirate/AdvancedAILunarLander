@@ -1,5 +1,6 @@
 from stable_baselines3.common.evaluation import evaluate_policy
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
+from src.novelty.limited_sensor.LunarEnvironment import LunarEnvironment
 from src.training.ModelAccess import loadModel
 
 
@@ -8,7 +9,7 @@ def main():
 
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
-    env = model.get_env()
+    env = LunarEnvironment()
 
     mean_reward, std_reward = evaluate_policy(model=model, env=env, n_eval_episodes=n_eval_episodes)
     print(f"Number of episodes for evaluation: {n_eval_episodes}")

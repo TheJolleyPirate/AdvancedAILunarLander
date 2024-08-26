@@ -8,7 +8,7 @@ from typing import Optional
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 
 date_format = "%Y%m%d-%H%M%S"
