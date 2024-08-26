@@ -2,13 +2,11 @@ import math
 from typing import Any
 
 import gymnasium as gym
-import pygame
+import pygame.draw
 from gymnasium import spaces
 from gymnasium.core import ObsType, RenderFrame
 import numpy as np
-from pygame import gfxdraw
-
-from src.novelty.ClonedLunaerLander import CloneLunarLander, SCALE
+from src.novelty.limited_sensor.ClonedLunaerLander import CloneLunarLander
 
 
 class LunarEnvironment(gym.Env):
@@ -18,7 +16,8 @@ class LunarEnvironment(gym.Env):
         self.render_mode = render_mode
         self.action_space = self.env.action_space
         self._adjust_observation_space()
-        self.observe_distance = 0.3
+        self.observe_distance = 4
+
 
     def _adjust_observation_space(self):
         assert self.env is not None
@@ -68,49 +67,27 @@ class LunarEnvironment(gym.Env):
             state.append(helipad_x1)
             state.append(helipad_x2)
             state.append(helipad_y)
+        if self.render_mode == "human":
+            self._circular()
         return np.array(state, dtype=np.float32), reward, terminated, False, info
 
-
     def reset(
-        self,
-        *,
-        seed: int | None = None,
-        options: dict[str, Any] | None = None,
+            self,
+            *,
+            seed: int | None = None,
+            options: dict[str, Any] | None = None,
     ) -> tuple[ObsType, dict[str, Any]]:
         return self.env.reset()
 
     def close(self):
         self.env.close()
 
+    def _circular(self):
+        pos = self.env.lander.position
+        pygame.draw.circle(surface=self.env.surf, color=(255, 255, 255), radius=self.observe_distance, center=pos)
 
     def render(self) -> RenderFrame | list[RenderFrame] | None:
         if self.render_mode is None:
             return
-        if not self.helipad_observed:
-            for x in [self.env.helipad_x1, self.env.helipad_x2]:
-                x = x * SCALE
-                flagy1 = self.env.helipad_y * SCALE
-                flagy2 = flagy1 + 50
-                pygame.draw.line(
-                    self.env.surf,
-                    color=(0, 0, 0),
-                    start_pos=(x, flagy1),
-                    end_pos=(x, flagy2),
-                    width=1,
-                )
-                pygame.draw.polygon(
-                    self.env.surf,
-                    color=(0, 0, 0),
-                    points=[
-                        (x, flagy2),
-                        (x, flagy2 - 10),
-                        (x + 25, flagy2 - 5),
-                    ],
-                )
-                gfxdraw.aapolygon(
-                    self.env.surf,
-                    [(x, flagy2), (x, flagy2 - 10), (x + 25, flagy2 - 5)],
-                    (0, 0, 0),
-                )
+        self._circular()
         return self.env.render()
-
