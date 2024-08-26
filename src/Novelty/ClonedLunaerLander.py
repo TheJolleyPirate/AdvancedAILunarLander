@@ -266,6 +266,7 @@ class CloneLunarLander(gym.Env, EzPickle):
                     "yellow",
                 ),
             )
+        self.helipad_observed: bool = False    # new variable
         self.turbulence_power = turbulence_power
 
         self.enable_wind = enable_wind
@@ -367,10 +368,8 @@ class CloneLunarLander(gym.Env, EzPickle):
         # x
         chunk_id = math.floor(self.np_random.uniform(0, 1) * CHUNKS)
         # avoid helipad being at the edges
-        if chunk_id <= CHUNKS - 2:
-            chunk_id -= 1
-        if chunk_id == 0:
-            chunk_id = 1
+        chunk_id = min(chunk_id, CHUNKS - 2)
+        chunk_id = max(chunk_id, 1)
 
         self.helipad_x1 = chunk_x[chunk_id]
         self.helipad_x2 = chunk_x[chunk_id + 1]
@@ -764,32 +763,32 @@ class CloneLunarLander(gym.Env, EzPickle):
                     pygame.draw.aalines(
                         self.surf, color=obj.color2, points=path, closed=True
                     )
-
-                for x in [self.helipad_x1, self.helipad_x2]:
-                    x = x * SCALE
-                    flagy1 = self.helipad_y * SCALE
-                    flagy2 = flagy1 + 50
-                    pygame.draw.line(
-                        self.surf,
-                        color=(255, 255, 255),
-                        start_pos=(x, flagy1),
-                        end_pos=(x, flagy2),
-                        width=1,
-                    )
-                    pygame.draw.polygon(
-                        self.surf,
-                        color=(204, 204, 0),
-                        points=[
-                            (x, flagy2),
-                            (x, flagy2 - 10),
-                            (x + 25, flagy2 - 5),
-                        ],
-                    )
-                    gfxdraw.aapolygon(
-                        self.surf,
-                        [(x, flagy2), (x, flagy2 - 10), (x + 25, flagy2 - 5)],
-                        (204, 204, 0),
-                    )
+                if self.helipad_observed:
+                    for x in [self.helipad_x1, self.helipad_x2]:
+                        x = x * SCALE
+                        flagy1 = self.helipad_y * SCALE
+                        flagy2 = flagy1 + 50
+                        pygame.draw.line(
+                            self.surf,
+                            color=(255, 255, 255),
+                            start_pos=(x, flagy1),
+                            end_pos=(x, flagy2),
+                            width=1,
+                        )
+                        pygame.draw.polygon(
+                            self.surf,
+                            color=(204, 204, 0),
+                            points=[
+                                (x, flagy2),
+                                (x, flagy2 - 10),
+                                (x + 25, flagy2 - 5),
+                            ],
+                        )
+                        gfxdraw.aapolygon(
+                            self.surf,
+                            [(x, flagy2), (x, flagy2 - 10), (x + 25, flagy2 - 5)],
+                            (204, 204, 0),
+                        )
 
         self.surf = pygame.transform.flip(self.surf, False, True)
 

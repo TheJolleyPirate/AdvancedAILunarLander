@@ -2,11 +2,13 @@ import math
 from typing import Any
 
 import gymnasium as gym
+import pygame
 from gymnasium import spaces
 from gymnasium.core import ObsType, RenderFrame
 import numpy as np
+from pygame import gfxdraw
 
-from src.novelty.ClonedLunaerLander import CloneLunarLander
+from src.novelty.ClonedLunaerLander import CloneLunarLander, SCALE
 
 
 class LunarEnvironment(gym.Env):
@@ -17,7 +19,6 @@ class LunarEnvironment(gym.Env):
         self.action_space = self.env.action_space
         self._adjust_observation_space()
         self.observe_distance = 0.3
-        self.observed_helipad: bool = False
 
     def _adjust_observation_space(self):
         assert self.env is not None
@@ -47,7 +48,7 @@ class LunarEnvironment(gym.Env):
         helipad_x2 = self.env.helipad_x2
         helipad_y = self.env.helipad_y
 
-        if not self.observed_helipad:
+        if not self.env.helipad_observed:
             pos_x, pos_y = self.env.lander.position
             diff_x = min(abs(helipad_x1 - pos_x), abs(helipad_x2 - pos_x))
             diff_y = abs(helipad_y - pos_y)
@@ -56,13 +57,13 @@ class LunarEnvironment(gym.Env):
             # update observed status of landing pad
             if distance <= self.observe_distance:
                 state.append(1)
-                self.observed_helipad = True
+                self.env.helipad_observed = True
             else:
                 state.append(0)
-            state.append(helipad_x1)
-            state.append(helipad_x2)
-            state.append(helipad_y)
-        else:
+                state.append(helipad_x1)
+                state.append(helipad_x2)
+                state.append(helipad_y)
+        if self.env.helipad_observed:
             state.append(1)
             state.append(helipad_x1)
             state.append(helipad_x2)
@@ -85,6 +86,31 @@ class LunarEnvironment(gym.Env):
     def render(self) -> RenderFrame | list[RenderFrame] | None:
         if self.render_mode is None:
             return
-
+        if not self.helipad_observed:
+            for x in [self.env.helipad_x1, self.env.helipad_x2]:
+                x = x * SCALE
+                flagy1 = self.env.helipad_y * SCALE
+                flagy2 = flagy1 + 50
+                pygame.draw.line(
+                    self.env.surf,
+                    color=(0, 0, 0),
+                    start_pos=(x, flagy1),
+                    end_pos=(x, flagy2),
+                    width=1,
+                )
+                pygame.draw.polygon(
+                    self.env.surf,
+                    color=(0, 0, 0),
+                    points=[
+                        (x, flagy2),
+                        (x, flagy2 - 10),
+                        (x + 25, flagy2 - 5),
+                    ],
+                )
+                gfxdraw.aapolygon(
+                    self.env.surf,
+                    [(x, flagy2), (x, flagy2 - 10), (x + 25, flagy2 - 5)],
+                    (0, 0, 0),
+                )
         return self.env.render()
 
