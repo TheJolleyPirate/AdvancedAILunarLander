@@ -12,7 +12,6 @@ class AtmosphereLunarLander(LunarLander):
         self.line_color = (255, 255, 255)  # colour of the atmosphere line
         self.line_width = 2  # thickness of the atmosphere line
         self.velocity_threshold = -4.0  # Threshold for allowed velocity to pass through the atmosphere
-        # self.atmosphere_y = 150 / 30.0
 
     def reset(self, **kwargs):
         observation = super().reset(**kwargs)
