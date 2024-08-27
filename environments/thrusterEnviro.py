@@ -11,39 +11,33 @@ class FaultyThrusters(LunarLander):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.brokenThruster = random.randint(1, 2)
-        #changes in observation only work with new agents
-        """low = np.array([-1.5, -1.5, -5.0, -5.0, -math.pi, -5.0, -0.0, -0.0, 1.0, ]).astype(np.float32)
-        high = np.array([1.5, 1.5, 5.0, 5.0, math.pi, 5.0, 1.0, 1.0, 2.0, ]).astype(np.float32)
-        self.observation_space = spaces.Box(low, high)"""
+        self.brokenThruster = random.randint(1, 3)
 
     def reset(self, **kwargs):
         broken = random.randint(1, 2)
         self.brokenThruster = broken
-        observation, extra = super().reset(**kwargs)
+        toReturn = super().reset(**kwargs)
         if broken == 1:
+            self.lander.color1 = (255, 0, 0)
+            self.lander.color2 = (255, 0, 0)
+        elif broken == 2:
             self.legs[0].color1 = (255, 0, 0)
             self.legs[0].color2 = (255, 0, 0)
-        elif broken == 2:
+        elif broken == 3:
             self.legs[1].color1 = (255, 0, 0)
             self.legs[1].color2 = (255, 0, 0)
-        return observation, extra
+        return toReturn
 
     def step(self, action):
-        usedBrokenThruster = False
+        working = random.randint(1, 4)
         if self.continuous:
             mainThruster, auxThrusters = action
-            if (auxThrusters < -0.5 and self.brokenThruster == 1) or (auxThrusters > 0.5 and self.brokenThruster == 2):
+            if working > 2 and mainThruster > 0 and self.brokenThruster == 1:
+                mainThruster = 0
+            if working != 1 and ((auxThrusters < -0.5 and self.brokenThruster == 2) or (auxThrusters > 0.5 and self.brokenThruster == 3)):
                 auxThrusters = 0
-                usedBrokenThruster = True
-                action = [mainThruster, auxThrusters]
+            action = [mainThruster, auxThrusters]
         else:
-            if action == self.brokenThruster:
+            if working != 1 and action == self.brokenThruster:
                 action = 0
-                usedBrokenThruster = True
-        observation, reward, done, truncated, info = super().step(action)
-        if usedBrokenThruster:
-            reward -= 15
-        #changes in observation only work with new agents
-        #observation = np.append(observation, [np.float32(self.brokenThruster)])
-        return observation, reward, done, truncated, info
+        return super().step(action)
