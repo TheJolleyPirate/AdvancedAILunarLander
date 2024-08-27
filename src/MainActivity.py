@@ -3,6 +3,9 @@ from src.Novelty.NoveltyName import NoveltyName
 from src.training.ModelAccess import loadModel
 
 from environments.atmosphereEnvironment import AtmosphereLunarLander
+from environments.thrusterEnviro import FaultyThrusters
+from stable_baselines3.common.monitor import Monitor
+
 
 def main():
     n_eval_episodes = 100
@@ -11,8 +14,7 @@ def main():
     model = loadModel(NoveltyName.ORIGINAL)
     # model = loadModel(NoveltyName.ATMOSPHERE)
     # env = model.get_env()
-
-    env = AtmosphereLunarLander(render_mode="human", continuous=True)
+    env = Monitor(FaultyThrusters(render_mode="human", continuous=True))
     model.set_env(env)
 
     mean_reward, std_reward = evaluate_policy(model=model, env=env, n_eval_episodes=n_eval_episodes)
