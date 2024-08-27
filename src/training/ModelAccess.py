@@ -8,6 +8,7 @@ from typing import Optional
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
+from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 
@@ -42,7 +43,6 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
     print(f"Model loaded: {latest_filename}")
     p = os.path.join(parent_folder, novelty_name.value, latest_filename)
-    env = gymnasium.make("LunarLander-v2", render_mode="human", continuous=True)
-
+    env = NoveltyDirector(novelty_name).build_env()
     return SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space, 'action_space': env.action_space})
     # return SAC.load(path=p, env=gym.make("LunarLander-v2", render_mode="human", continuous=True))

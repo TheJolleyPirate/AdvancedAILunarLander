@@ -18,7 +18,6 @@ class LunarEnvironment(gym.Env):
         self._adjust_observation_space()
         self.observe_distance = 4
 
-
     def _adjust_observation_space(self):
         assert self.env is not None
         low = self.env.observation_space.low.tolist()
