@@ -9,13 +9,15 @@ class GravityLunarLander(LunarLander):
         super().__init__(**kwargs)
         self.angle = random.uniform(-math.pi / 16, math.pi / 16)
         self.radius_multiplier = random.uniform(8, 12)
+        self.gravity_multiplier = random.uniform(0.6, 0.8)
 
 
     def reset(self, **kwargs):
         observation = super().reset(**kwargs)
 
-        self.angle = random.uniform(-math.pi / 16, math.pi / 16)
-
+        self.angle = random.uniform(-math.pi / 12, math.pi / 12)
+        self.radius_multiplier = random.uniform(8, 12)
+        self.gravity_multiplier = random.uniform(0.6, 0.8)
         return observation
 
     def step(self, action):
@@ -26,11 +28,11 @@ class GravityLunarLander(LunarLander):
         y_pos = self.lander.position[1] #y_pos between 13.5 and 3.9
 
         #g = self.gravity*(1-2*h/R)
-        desired_gravity = (0.6*self.gravity)*(1-((2*(y_pos-self.helipad_y))/(self.radius_multiplier*self.helipad_y)))
+        desired_gravity = min(-2, (self.gravity_multiplier*self.gravity)*(1-((2*(y_pos-self.helipad_y))/(self.radius_multiplier*self.helipad_y))))
 
         #current force = self.gravity*self.lander.mass
         #want force = desired_gravity*self.lander.mass
-        #force between 75 and 105 degrees
+        #force between -15 and 15 degrees
 
         force_mag = (desired_gravity-self.gravity)*self.lander.mass
         force_vector = (force_mag*math.sin(self.angle), force_mag*math.cos(self.angle))
