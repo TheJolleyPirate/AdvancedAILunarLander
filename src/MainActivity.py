@@ -1,3 +1,4 @@
+import gymnasium
 from stable_baselines3.common.evaluation import evaluate_policy
 from src.Novelty.NoveltyName import NoveltyName
 from src.training.ModelAccess import loadModel
@@ -10,8 +11,8 @@ def main():
 
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
-    env = Monitor(GravityLunarLander(render_mode="rgb_array", continuous=True))
-    # env = model.get_env(render_mode="rgb_array", continuous=True)
+    env = Monitor(GravityLunarLander(render_mode="human", continuous=True))
+    # env = gymnasium.make("LunarLander-v2", render_mode="rgb_array", continuous=True)
 
     mean_reward, std_reward = evaluate_policy(model=model, env=env, n_eval_episodes=n_eval_episodes)
     print(f"Number of episodes for evaluation: {n_eval_episodes}")
