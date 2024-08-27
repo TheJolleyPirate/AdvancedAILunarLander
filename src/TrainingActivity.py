@@ -8,9 +8,9 @@ from src.training.ModelTraining import continueTrainingModel, trainNewModel
 
 
 def training_activity(novel_name=NoveltyName.ORIGINAL):
-    env = LunarEnvironment()
+    env = LunarEnvironment(render_mode=None)
     start_time = datetime.now()
-    end_time = start_time + timedelta(hours=12)
+    end_time = start_time + timedelta(hours=4)
     while datetime.now() < end_time:
         try:
             continueTrainingModel(env=env, novelty_name=NoveltyName.SENSOR)
