@@ -3,19 +3,20 @@ from time import sleep
 import gymnasium as gym
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
+from src.novelty.limited_sensor.LunarEnvironment import LunarEnvironment
 from src.training.ModelTraining import continueTrainingModel, trainNewModel
 
 
 def training_activity(novel_name=NoveltyName.ORIGINAL):
-    env = gym.make("LunarLander-v2", render_mode="human", continuous=True)
+    env = LunarEnvironment()
     start_time = datetime.now()
     end_time = start_time + timedelta(hours=12)
     while datetime.now() < end_time:
         try:
-            model = continueTrainingModel(NoveltyName.ORIGINAL)
+            continueTrainingModel(env=env, novelty_name=NoveltyName.SENSOR)
             sleep(20)
         except NoModelException:
-            model = trainNewModel(env, NoveltyName.ORIGINAL)
+            trainNewModel(env=env, novelty_name=NoveltyName.SENSOR)
 
 
 if __name__ == "__main__":
