@@ -41,7 +41,13 @@ class LunarEnvironment(gym.Env):
     def step(self, action):
         state, reward, terminated, truncated, info = self.env.step(action)
         state = state.tolist()
+        state = self._extend_observation(state)
+        if self.render_mode == "human":
+            self._circular()
+        return np.array(state, dtype=np.float32), reward, terminated, False, info
 
+
+    def _extend_observation(self, state):
         # get information from lunar environment
         helipad_x1 = self.env.helipad_x1
         helipad_x2 = self.env.helipad_x2
@@ -55,7 +61,6 @@ class LunarEnvironment(gym.Env):
             distance = math.sqrt(diff_x * diff_x + diff_y * diff_y)
             # update observed status of landing pad
             if distance <= self.observe_distance:
-                state.append(1)
                 self.env.helipad_observed = True
             else:
                 state.append(0)
@@ -67,9 +72,7 @@ class LunarEnvironment(gym.Env):
             state.append(helipad_x1)
             state.append(helipad_x2)
             state.append(helipad_y)
-        if self.render_mode == "human":
-            self._circular()
-        return np.array(state, dtype=np.float32), reward, terminated, False, info
+        return state
 
     def reset(
             self,
@@ -77,7 +80,10 @@ class LunarEnvironment(gym.Env):
             seed: int | None = None,
             options: dict[str, Any] | None = None,
     ) -> tuple[ObsType, dict[str, Any]]:
-        return self.env.reset()
+        observation, d = self.env.reset()
+        observation = observation.tolist()
+        observation = self._extend_observation(observation)
+        return observation, d
 
     def close(self):
         self.env.close()
