@@ -1,4 +1,3 @@
-import pygame
 from gymnasium.envs.box2d.lunar_lander import LunarLander
 import random
 import math
