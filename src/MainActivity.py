@@ -1,9 +1,12 @@
 from stable_baselines3.common.evaluation import evaluate_policy
-from src.Novelty.NoveltyName import NoveltyName
+
+from environments.thrusterEnviro import FaultyThrusters
+from src.environments.gravityEnvironment import GravityLunarLander
+from src.novelty.NoveltyName import NoveltyName
 from src.training.ModelAccess import loadModel
 from environments.TurbulenceEnv import TurbulenceEnv
 from stable_baselines3.common.monitor import Monitor
-
+from stable_baselines3.common.monitor import Monitor
 
 def main():
     n_eval_episodes = 100
