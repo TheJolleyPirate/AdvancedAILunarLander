@@ -2,7 +2,7 @@ import gymnasium as gym
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
@@ -26,16 +26,16 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
     # Hence save timesteps separately
     model.N_TIMESTEPS = params.n_timesteps
 
-    model.learn(total_timesteps= model.N_TIMESTEPS, progress_bar=True)
-    saveModel(model, NoveltyName.ORIGINAL)
-    # saveModel(model, NoveltyName.ATMOSPHERE)
+    model.learn(total_timesteps=model.N_TIMESTEPS, progress_bar=True)
+    saveModel(model, novelty_name)
     return model
 
 
-def continueTrainingModel(novelty_name: NoveltyName):
+def continueTrainingModel(env=None, novelty_name: NoveltyName = NoveltyName.ORIGINAL):
     model = loadModel(novelty_name)
+    if env is not None:
+        model.env = env
     print("Retraining model for novelty: " + novelty_name.value)
     model.learn(total_timesteps=num_episodes)
-    saveModel(model, NoveltyName.ORIGINAL)
-    # saveModel(model, NoveltyName.ATMOSPHERE)
+    saveModel(model, novelty_name)
     return model

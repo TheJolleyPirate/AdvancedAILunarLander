@@ -1,41 +1,48 @@
+import gymnasium
 from stable_baselines3.common.evaluation import evaluate_policy
 
-from environments.thrusterEnviro import FaultyThrusters
-from src.environments.gravityEnvironment import GravityLunarLander
+from src.Util import adapt_observation
 from src.novelty.NoveltyName import NoveltyName
+from src.novelty.limited_sensor.LunarEnvironment import LunarEnvironment
 from src.training.ModelAccess import loadModel
-from environments.TurbulenceEnv import TurbulenceEnv
-from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.monitor import Monitor
+import statistics
+
 
 def main():
     n_eval_episodes = 100
 
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
-    # model = loadModel(NoveltyName.ATMOSPHERE)
-    # env = model.get_env()
-    env = Monitor(FaultyThrusters(render_mode="human", continuous=True))
-    model.set_env(env)
-    env = Monitor(GravityLunarLander(render_mode="rgb_array", continuous=True))
-    # env = gymnasium.make("LunarLander-v2", render_mode="rgb_array", continuous=True)
-    # TODO: should load from NoveltyName model
-    env = Monitor(TurbulenceEnv( continuous=True))
-    model.set_env(env)
+    shape_trained = model.env.observation_space.shape[0]
+    original_env = gymnasium.make("LunarLander-v2", render_mode=None, continuous=True)
+    custom_env = LunarEnvironment(render_mode="human")
+    envs = [original_env, custom_env]
+    env_names = ["Original", "Custom-Limited Sensor"]
+    for i in range(len(envs)):
+        print(f"Evaluating environment {env_names[i]}")
+        evaluate(model, envs[i], 100)
 
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=n_eval_episodes)
-    print(f"Mean reward for {n_eval_episodes}: {mean_reward}")
-    print(f"Standard deviation of rewards: {std_reward}")
 
-    for _ in range(n_eval_episodes):
+def evaluate(model, env, n_episodes: int = 100):
+    rewards = []
+    shape_trained = model.env.observation_space.shape[0]
+    for _ in range(n_episodes):
+        tmp = 0
         observation, _ = env.reset()
-        # observation = env.reset() # (Without Monitor Wrapper / custom env)
         done = False
         while not done:
-            action, _ = model.predict(observation=observation, deterministic=True)
-            observation, reward, done, info, _ = env.step(action)
-            # observation, reward, done, info = env.step(action) # (Without Monitor Wrapper / custom env)
-    env.close()
+            observation = adapt_observation(observation, shape_trained)
+            action, _ = model.predict(observation, deterministic=True)
+            observation, reward, done, truncated, info = env.step(action)
+            tmp += reward
+        rewards.append(tmp)
+    mean_reward = round(statistics.mean(rewards), 2)
+    std_reward = round(statistics.stdev(rewards), 2)
+    print(f"Number of episodes for evaluation: {n_episodes}")
+    print(f"Mean reward: {mean_reward}")
+    print(f"Standard deviation: {std_reward}")
+    print(f"Min: {min(rewards)}")
+    print(f"Max: {max(rewards)}")
 
 
 if __name__ == '__main__':
