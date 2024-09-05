@@ -1,9 +1,14 @@
 import gymnasium
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.monitor import Monitor
 
+from environments.atmosphereEnvironment import AtmosphereLunarLander
+from environments.thrusterEnviro import FaultyThrusters
 from src.Util import adapt_observation
+from src.environments.TurbulenceEnv import TurbulenceEnv
+from src.environments.gravityEnvironment import GravityLunarLander
 from src.novelty.NoveltyName import NoveltyName
-from src.novelty.limited_sensor.LunarEnvironment import LunarEnvironment
+from src.novelty.limited_sensor.LimitedSensor import LimitedSensor
 from src.training.ModelAccess import loadModel
 import statistics
 
@@ -14,9 +19,16 @@ def main():
     # Load latest trained model
     model = loadModel(NoveltyName.ORIGINAL)
     shape_trained = model.env.observation_space.shape[0]
+
+    # load environment
     original_env = gymnasium.make("LunarLander-v2", render_mode=None, continuous=True)
-    custom_env = LunarEnvironment(render_mode="human")
-    envs = [original_env, custom_env]
+    faulty_thruster_env = Monitor(FaultyThrusters(render_mode="human", continuous=True))
+    atmosphere_env = AtmosphereLunarLander(render_mode="human", continuous=True)
+    changing_gravity_env = Monitor(GravityLunarLander(render_mode="rgb_array", continuous=True))
+    turbulence_env = Monitor(TurbulenceEnv(continuous=True))
+    limited_sensor_env = LimitedSensor(render_mode="human")
+
+    envs = [original_env, faulty_thruster_env, atmosphere_env, changing_gravity_env, turbulence_env, limited_sensor_env]
     env_names = ["Original", "Custom-Limited Sensor"]
     for i in range(len(envs)):
         print(f"Evaluating environment {env_names[i]}")

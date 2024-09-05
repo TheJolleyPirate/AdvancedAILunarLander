@@ -3,12 +3,12 @@ from time import sleep
 import gymnasium as gym
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
-from src.novelty.limited_sensor.LunarEnvironment import LunarEnvironment
+from src.novelty.limited_sensor.LimitedSensor import LimitedSensor
 from src.training.ModelTraining import continueTrainingModel, trainNewModel
 
 
 def training_activity(novel_name=NoveltyName.ORIGINAL):
-    env = LunarEnvironment(render_mode=None)
+    env = LimitedSensor(render_mode=None)
     start_time = datetime.now()
     end_time = start_time + timedelta(hours=4)
     while datetime.now() < end_time:
