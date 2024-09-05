@@ -15,8 +15,9 @@ def main():
     # load environment
     for novelty in NoveltyName:
         env = NoveltyDirector(novelty).build_env(render_mode=None, continuous=True)
-        print(f"Evaluating environment {novelty.name}")
+        print(f"Evaluating environment {novelty.name}: ...")
         evaluate(model, env, n_eval_episodes)
+        print(f"Finish evaluation. \n")
 
 
 def evaluate(model, env, n_episodes: int = 100):
