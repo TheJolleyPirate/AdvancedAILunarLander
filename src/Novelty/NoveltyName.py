@@ -6,6 +6,8 @@ class NoveltyName (Enum):
     # Phillip's novelty
     ATMOSPHERE = "atmosphere"
     # tentative novelty
-    HIGHLAND = "highland"
+    FAULTY_THRUSTER = "faulty_thruster"
     GRAVITY = "gravity"
     TURBULENCE = "turbulence"
+    SENSOR = "SENSOR"
+    # HIGHLAND = "highland"
