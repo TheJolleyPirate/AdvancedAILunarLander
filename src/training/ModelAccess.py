@@ -6,8 +6,8 @@ from datetime import datetime
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.novelty.NoveltyDirector import NoveltyDirector
-from src.novelty.NoveltyName import NoveltyName
+from src.Novelty.NoveltyDirector import NoveltyDirector
+from src.Novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 
 date_format = "%Y%m%d-%H%M%S"
@@ -42,5 +42,5 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     print(f"Model loaded: {latest_filename}")
     p = os.path.join(parent_folder, novelty_name.value, latest_filename)
     env = NoveltyDirector(novelty_name).build_env()
-    return SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space, 'action_space': env.action_space})
-    # return SAC.load(path=p, env=gym.make("LunarLander-v2", render_mode="human", continuous=True))
+    loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space, 'action_space': env.action_space})
+    return loadedModel

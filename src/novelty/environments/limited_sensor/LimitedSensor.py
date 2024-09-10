@@ -6,7 +6,7 @@ import pygame.draw
 from gymnasium import spaces
 from gymnasium.core import ObsType, RenderFrame
 import numpy as np
-from src.novelty.limited_sensor.ClonedLunaerLander import CloneLunarLander
+from src.Novelty.environments.limited_sensor.ClonedLunaerLander import CloneLunarLander
 
 
 class LimitedSensor(gym.Env):

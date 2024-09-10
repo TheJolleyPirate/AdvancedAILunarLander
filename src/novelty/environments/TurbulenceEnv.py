@@ -1,6 +1,7 @@
 from gymnasium.envs.box2d.lunar_lander import *
 import math
 import random
+import pygame
 
 
 class TurbulenceEnv(LunarLander):

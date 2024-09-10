@@ -1,13 +1,15 @@
 from enum import Enum
 
-
 class NoveltyName (Enum):
     ORIGINAL = "original"
-    # Phillip's novelty
     ATMOSPHERE = "atmosphere"
-    # tentative novelty
-    FAULTY_THRUSTER = "faulty_thruster"
+    THRUSTER = "thruster"
     GRAVITY = "gravity"
     TURBULENCE = "turbulence"
     SENSOR = "SENSOR"
-    # HIGHLAND = "highland"
+
+def noveltyList():
+    novelties = list()
+    for novelty in NoveltyName:
+        novelties.append(novelty)
+    return novelties

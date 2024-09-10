@@ -1,8 +1,7 @@
 import gymnasium as gym
 from stable_baselines3 import SAC
-from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.novelty.NoveltyName import NoveltyName
+from src.Novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
@@ -22,7 +21,7 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
                 policy=params.policy,
                 policy_kwargs=params.policy_kwargs,
                 verbose=1)
-    # By default model will reset #of timesteps, resulting 0 episodes of training
+    # By default model will reset # of timesteps, resulting 0 episodes of training
     # Hence save timesteps separately
     model.N_TIMESTEPS = params.n_timesteps
 

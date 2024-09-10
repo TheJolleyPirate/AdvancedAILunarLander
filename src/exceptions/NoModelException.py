@@ -1,4 +1,4 @@
-from src.novelty.NoveltyName import NoveltyName
+from src.Novelty.NoveltyName import NoveltyName
 
 
 class NoModelException(Exception):
