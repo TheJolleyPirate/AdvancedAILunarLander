@@ -6,10 +6,10 @@ class NoveltyName (Enum):
     THRUSTER = "thruster"
     GRAVITY = "gravity"
     TURBULENCE = "turbulence"
-    SENSOR = "SENSOR"
+    SENSOR = "sensor"
 
 def noveltyList():
     novelties = list()
     for novelty in NoveltyName:
-        novelties.append(novelty)
+        novelties.append(novelty.value)
     return novelties

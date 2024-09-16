@@ -7,32 +7,38 @@ from src.exceptions.NoModelException import NoModelException
 from src.training.ModelAccess import loadModel
 import statistics
 
-def runSingleNovelty(novelty, numEvalEpisodes, render, continuous):
+def runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous):
     # load environment
     env = NoveltyDirector(novelty).build_env(render_mode=render, continuous=continuous)
     # load model
     try:
-        # trying to get model matching novelty
-        model = loadModel(novelty)
-        usedModel = novelty.value
+        try:
+            # trying to get model matching agent
+            model = loadModel(agent)
+            usedModel = agent.value
+        except AttributeError:
+            # agent is None type, or string using default (novelty agent
+            model = loadModel(novelty)
+            usedModel = novelty.value
     except NoModelException:
-        # if no model for current exception using original
-        print(f"no model for {novelty} using default")
+        # if no model for selected agent then using default
+        print(f"no model for {agent} using default")
         usedNovelty = NoveltyName.ORIGINAL
         model = loadModel(usedNovelty)
         usedModel = usedNovelty.value
+
     # shape_trained = model.env.observation_space.shape[0]
     print(f"Evaluating environment {novelty.name} with model {usedModel}: ...")
     evaluate(model, env, numEvalEpisodes)
     print(f"Finish evaluation. \n")
 
-def main(novelty: NoveltyName, render: str, continuous: bool, numEvalEpisodes: int):
+def main(novelty: NoveltyName, agent: NoveltyName, render: str, continuous: bool, numEvalEpisodes: int):
 
     if novelty is None:
         for currentNovelty in NoveltyName:
-            runSingleNovelty(currentNovelty, numEvalEpisodes, render, continuous)
+            runSingleNovelty(currentNovelty, agent, numEvalEpisodes, render, continuous)
     else:
-        runSingleNovelty(novelty, numEvalEpisodes, render, continuous)
+        runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous)
 
 def evaluate(model, env, n_episodes: int = 100):
     rewards = []
@@ -70,12 +76,16 @@ if __name__ == '__main__':
                                                  "multiple different novelties")
     # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
     defaultNovelty = None
-    allowedNovelties = noveltyList()
-    allowedNovelties.append(None)
-    parser.add_argument("-n", "--novelty", default=defaultNovelty, choices=allowedNovelties,
-                        help="the novelty you want to run the agent on, leave blank or input \"all\"")
+    parser.add_argument("-n", "--novelty", default=defaultNovelty,
+                        help="the novelty you want to run the agent on, "
+                             "leave blank or input \"all\" to run on all novelties")
     # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
-    defaultRender = "human"
+    defaultagent = defaultNovelty
+    parser.add_argument("-a", "--agent", default=defaultNovelty,
+                        help="the agent you want to run on the novelty, "
+                             "leave blank or input \"default\" to run on same as the novelty")
+    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
+    defaultRender = None
     allowedRenders = [None, "human"]
     parser.add_argument("-r", "--render_mode", default=defaultRender, choices=allowedRenders,
                         help="the render mode you want to use")
@@ -88,16 +98,27 @@ if __name__ == '__main__':
     parser.add_argument("-e", "--num_episodes", type=int, default=defaultNumEvalEpisodes,
                         help="number of evaluation episodes; default 100, must be at least 2")
     args = parser.parse_args()
-    noveltyName = args.novelty
+    noveltyValue = args.novelty
+    agentValue = args.agent
     runningNovelty = defaultNovelty
-    for n in NoveltyName:
-        if n.value == noveltyName:
-            runningNovelty = n
-        elif noveltyName == "all":
-            runningNovelty = None
+    runningAgent = defaultagent
+    if noveltyValue != "all":
+        for n in NoveltyName:
+            if n.value == noveltyValue:
+                runningNovelty = n
+                break
+    else:
+        runningNovelty = None
+    if agentValue != "default":
+        for n in NoveltyName:
+            if n.value == agentValue:
+                runningAgent = n
+                break
+    else:
+        runningAgent = None
     runningRenderMode = args.render_mode
     runningContinuous = not args.not_continuous
     runningNumEpisodes = args.num_episodes
     if runningNumEpisodes < 2:
         raise ValueError("number of evaluation episodes must be at least 2")
-    main(runningNovelty, runningRenderMode, runningContinuous, runningNumEpisodes)
+    main(runningNovelty, runningAgent, runningRenderMode, runningContinuous, runningNumEpisodes)
