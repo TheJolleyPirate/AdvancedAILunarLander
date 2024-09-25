@@ -1,7 +1,7 @@
 import gymnasium as gym
 from stable_baselines3 import SAC
 
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 

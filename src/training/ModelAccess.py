@@ -6,12 +6,12 @@ from datetime import datetime
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.Novelty.NoveltyDirector import NoveltyDirector
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyDirector import NoveltyDirector
+from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 
 date_format = "%Y%m%d-%H%M%S"
-parent_folder = "../models/"
+parent_folder = "./models/"
 
 
 def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
@@ -29,6 +29,7 @@ def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
 def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     # check non-empty folder
     if not os.path.exists(parent_folder):
+        print(os.listdir())
         raise NoModelException(novelty_name)
     # check sub-folder
     model_path = os.path.join(parent_folder, novelty_name.value)

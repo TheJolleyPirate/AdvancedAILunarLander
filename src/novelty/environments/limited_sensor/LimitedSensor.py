@@ -1,12 +1,12 @@
 import math
-from typing import Any
+from typing import Any, Optional, Union
 
 import gymnasium as gym
 import pygame.draw
 from gymnasium import spaces
 from gymnasium.core import ObsType, RenderFrame
 import numpy as np
-from src.Novelty.environments.limited_sensor.ClonedLunaerLander import CloneLunarLander
+from src.novelty.environments.limited_sensor.ClonedLunaerLander import CloneLunarLander
 
 
 class LimitedSensor(gym.Env):
@@ -76,8 +76,8 @@ class LimitedSensor(gym.Env):
     def reset(
             self,
             *,
-            seed: int | None = None,
-            options: dict[str, Any] | None = None,
+            seed: Optional[int] = None,
+            options: Optional[dict[str, Any]] = None,
     ) -> tuple[ObsType, dict[str, Any]]:
         observation, d = self.env.reset()
         observation = observation.tolist()
@@ -91,7 +91,7 @@ class LimitedSensor(gym.Env):
         pos = self.env.lander.position
         pygame.draw.circle(surface=self.env.surf, color=(255, 255, 255), radius=self.observe_distance, center=pos)
 
-    def render(self) -> RenderFrame | list[RenderFrame] | None:
+    def render(self) -> Optional[Union[RenderFrame, list[RenderFrame]]]:
         if self.render_mode is None:
             return
         self._circular()

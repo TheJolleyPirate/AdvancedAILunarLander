@@ -1,12 +1,12 @@
-from src.Novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName
 from stable_baselines3.common.monitor import Monitor
 import gymnasium as gym
 
-from src.Novelty.environments.TurbulenceEnv import TurbulenceEnv
-from src.Novelty.environments.atmosphereEnvironment import AtmosphereLunarLander
-from src.Novelty.environments.gravityEnvironment import GravityLunarLander
-from src.Novelty.environments.limited_sensor.LimitedSensor import LimitedSensor
-from src.Novelty.environments.thrusterEnviro import FaultyThrusters
+from src.novelty.environments.TurbulenceEnv import TurbulenceEnv
+from src.novelty.environments.atmosphereEnvironment import AtmosphereLunarLander
+from src.novelty.environments.gravityEnvironment import GravityLunarLander
+from src.novelty.environments.limited_sensor.LimitedSensor import LimitedSensor
+from src.novelty.environments.thrusterEnviro import FaultyThrusters
 
 
 class NoveltyDirector:

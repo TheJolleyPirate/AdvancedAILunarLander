@@ -1,15 +1,17 @@
 import argparse
 
 from src.Util import adapt_observation
-from src.Novelty.NoveltyDirector import NoveltyDirector
-from src.Novelty.NoveltyName import NoveltyName, noveltyList
+from src.novelty.NoveltyDirector import NoveltyDirector
+from src.novelty.NoveltyName import NoveltyName, noveltyList
 from src.exceptions.NoModelException import NoModelException
 from src.training.ModelAccess import loadModel
+from gymnasium.envs.box2d.lunar_lander import LunarLander
 import statistics
 
 def runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous):
     # load environment
     env = NoveltyDirector(novelty).build_env(render_mode=render, continuous=continuous)
+    
     # load model
     try:
         try:
@@ -27,7 +29,6 @@ def runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous):
         model = loadModel(usedNovelty)
         usedModel = usedNovelty.value
 
-    # shape_trained = model.env.observation_space.shape[0]
     print(f"Evaluating environment {novelty.name} with model {usedModel}: ...")
     evaluate(model, env, numEvalEpisodes)
     print(f"Finish evaluation. \n")
@@ -40,18 +41,23 @@ def main(novelty: NoveltyName, agent: NoveltyName, render: str, continuous: bool
     else:
         runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous)
 
-def evaluate(model, env, n_episodes: int = 100):
+def evaluate(model, env: LunarLander, n_episodes: int = 100):
     rewards = []
     shape_trained = model.env.observation_space.shape[0]
     for _ in range(n_episodes):
-        tmp = 0
+        tmp, count_failed_eval = 0, 0
         observation, _ = env.reset()
         done = False
         while not done:
             observation = adapt_observation(observation, shape_trained)
             action, _ = model.predict(observation, deterministic=True)
-            observation, reward, done, truncated, info = env.step(action)
+            try:
+                observation, reward, done, truncated, _ = env.step(action)
+            except RuntimeError:
+                count_failed_eval += 1
             tmp += reward
+        if count_failed_eval > 0:
+            print(f"Failed to evaluate this novelty for {count_failed_eval} time(s).")
         rewards.append(tmp)
     mean_reward = round(statistics.mean(rewards), 2)
     std_reward = round(statistics.stdev(rewards), 2)
