@@ -8,13 +8,21 @@ from stable_baselines3 import SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from novelty.NoveltyDirector import NoveltyDirector
+from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
 
 num_episodes = 5_000
+
+show_progress_bar = False
+try:
+    import tqdm
+    show_progress_bar = True
+    print("Progress bar is enabled.")
+except ImportError:
+    print("Progress bar disabled. To enable it, install package `tqdm`. ")
 
 
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
@@ -46,29 +54,14 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
     return model
 
 
-def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL, novelty_name: NoveltyName = NoveltyName.ORIGINAL):
+def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL, 
+                          model_novelty: NoveltyName = NoveltyName.ORIGINAL):
     env = NoveltyDirector(env_novelty).build_env()
-    env.render("human")
     
     model = loadModel(model_novelty)
     model.set_env(env)
 
-
-    print("Retraining model for novelty: " + novelty_name.value)
-    model = model.learn(total_timesteps=1)
-    saveModel(model, novelty_name)
+    print("Retraining model for novelty: " + model_novelty.value)
+    model = model.learn(total_timesteps=num_episodes, progress_bar=show_progress_bar)
+    saveModel(model, model_novelty)
     return model
-
-
-def _trainOnce(env_novelty: NoveltyName = NoveltyName.ORIGINAL, model_novelty: NoveltyName = NoveltyName.ORIGINAL):
-    env = NoveltyDirector(env_novelty).build_env()
-    model = loadModel(model_novelty)
-    model.set_env(env)
-    env.render_mode = "human"
-    print(f"Training model of {model_novelty.value} with environment {env_novelty.value}")
-    model.train
-    model.learn(total_timesteps=100)
-
-
-def recordTraining(env=None, novelty = NoveltyName.ORIGINAL):
-    pass
