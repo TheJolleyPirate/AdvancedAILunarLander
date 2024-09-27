@@ -16,15 +16,20 @@ class NoveltyDirector:
         self.novelty = novelty
 
     def build_env(self, render_mode=None, continuous: bool = True) -> Monitor:
+        env = self._find_env(render_mode=render_mode, continuous=continuous)
+        env.num_envs = 1
+        return Monitor(env)
+
+    def _find_env(self, render_mode=None, continuous: bool = True) -> Monitor:
         if self.novelty == NoveltyName.THRUSTER:
-            return Monitor(FaultyThrusters(render_mode=render_mode, continuous=continuous))
+            return FaultyThrusters(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.ATMOSPHERE:
-            return Monitor(AtmosphereLunarLander(render_mode=render_mode, continuous=continuous))
+            return AtmosphereLunarLander(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.GRAVITY:
-            return Monitor(GravityLunarLander(render_mode=render_mode, continuous=continuous))
+            return GravityLunarLander(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.TURBULENCE:
-            return Monitor(TurbulenceEnv(render_mode=render_mode, continuous=continuous))
+            return TurbulenceEnv(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.SENSOR:
-            return Monitor(LimitedSensor(render_mode=render_mode, continuous=continuous))
+            return LimitedSensor(render_mode=render_mode, continuous=continuous)
         else:
-            return Monitor(gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous))
+            return gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous)

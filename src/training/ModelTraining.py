@@ -1,21 +1,31 @@
 import gymnasium as gym
 import matplotlib.pyplot as plt
+import numpy as np
+
+
+from datetime import datetime
 from stable_baselines3 import SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
+from novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
 
-num_episodes = 500_000
+num_episodes = 5_000
 
 
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
     print("Training new model for novelty: " + novelty_name.value)
+    
+    if not isinstance(env, Monitor):
+        print("Wrapping env with Monitor for presetation.")
+        env = Monitor(env)
+    
     params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
-    env = Monitor(DummyVecEnv[lambda: env])
+    
     model = SAC(env=env,
                 batch_size=params.batch_size,
                 buffer_size=params.buffer_size,
@@ -26,29 +36,39 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
                 policy=params.policy,
                 policy_kwargs=params.policy_kwargs,
                 verbose=1)
+    
     # By default model will reset # of timesteps, resulting 0 episodes of training
     # Hence save timesteps separately
+
     model.N_TIMESTEPS = params.n_timesteps
-
     model.learn(total_timesteps=model.N_TIMESTEPS, progress_bar=True)
+    saveModel(model, novelty_name)
+    return model
+
+
+def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL, novelty_name: NoveltyName = NoveltyName.ORIGINAL):
+    env = NoveltyDirector(env_novelty).build_env()
+    env.render("human")
     
-    # training_results = env.get_episode_rewards()
-    # plt.plot(np.arange(len(training_results)), training_results)
-    # plt.title('Training Process: Episode Rewards')
-    # plt.xlabel('Episode')
-    # plt.ylabel('Reward')
-    # plt.grid()
-    # plt.show()
-
-    saveModel(model, novelty_name)
-    return model
+    model = loadModel(model_novelty)
+    model.set_env(env)
 
 
-def continueTrainingModel(env=None, novelty_name: NoveltyName = NoveltyName.ORIGINAL):
-    model = loadModel(novelty_name)
-    if env is not None:
-        model.env = DummyVecEnv([lambda: env])
     print("Retraining model for novelty: " + novelty_name.value)
-    model.learn(total_timesteps=num_episodes)
+    model = model.learn(total_timesteps=1)
     saveModel(model, novelty_name)
     return model
+
+
+def _trainOnce(env_novelty: NoveltyName = NoveltyName.ORIGINAL, model_novelty: NoveltyName = NoveltyName.ORIGINAL):
+    env = NoveltyDirector(env_novelty).build_env()
+    model = loadModel(model_novelty)
+    model.set_env(env)
+    env.render_mode = "human"
+    print(f"Training model of {model_novelty.value} with environment {env_novelty.value}")
+    model.train
+    model.learn(total_timesteps=100)
+
+
+def recordTraining(env=None, novelty = NoveltyName.ORIGINAL):
+    pass
