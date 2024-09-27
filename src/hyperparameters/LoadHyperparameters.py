@@ -21,5 +21,7 @@ def load(filename: str):
             params.gradient_steps = params_dict["gradient_steps"]
             params.learning_starts = params_dict["learning_starts"]
             return params
-    except RuntimeError:
+        
+    except FileNotFoundError:
+        print(f"File {filename} not found.")
         return HyperParameters()
