@@ -20,7 +20,7 @@ class NoveltyDirector:
         env.num_envs = 1
         return Monitor(env)
 
-    def _find_env(self, render_mode=None, continuous: bool = True) -> Monitor:
+    def _find_env(self, render_mode=None, continuous: bool = True):
         if self.novelty == NoveltyName.THRUSTER:
             return FaultyThrusters(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.ATMOSPHERE:

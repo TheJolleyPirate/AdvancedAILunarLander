@@ -34,18 +34,17 @@ class EpisodeRewardCallback(BaseCallback):
 
     def __init__(self, verbose: int = 0):
         super().__init__(verbose)
-        self.episode_rewards = []
-    
+        self.reward = 0
 
     def _on_step(self) -> bool:
         if self.locals.get('dones') is not None and any(self.locals['dones']):
-            total_reward = sum(self.locals['rewards'])
-            self.episode_rewards.append(total_reward)
+            self.reward = sum(self.locals['rewards'])
+            return False    # train for only one episode 
         return True
     
 
     def _on_training_end(self) -> None:
-        print(f"Episode finished with reward: {self.episode_rewards}")
+        print(f"Episode finished with reward: {self.reward}")
 
     
     def get_reward(self):

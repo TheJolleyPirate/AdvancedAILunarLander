@@ -10,7 +10,7 @@ import statistics
 
 def runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous):
     # load environment
-    env = NoveltyDirector(novelty).build_env(render_mode=render, continuous=continuous)
+    env = NoveltyDirector(novelty).build_env(render_mode="rgb_array", continuous=continuous)
     
     # load model
     try:
