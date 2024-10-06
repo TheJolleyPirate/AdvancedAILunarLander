@@ -7,6 +7,7 @@ class NoveltyName (Enum):
     GRAVITY = "gravity"
     TURBULENCE = "turbulence"
     SENSOR = "sensor"
+    MEMORY = "memory"
 
 def noveltyList():
     novelties = list()
