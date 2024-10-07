@@ -81,4 +81,7 @@ class EpisodeRewardCallback(BaseCallback):
         return self.reward
 
 if __name__ == "__main__":
-    monitor_training(num_episodes=5000)
+    for novelty in NoveltyName:
+        if novelty == NoveltyName.ORIGINAL:
+            continue
+        monitor_training(env_novelty=novelty, num_episodes=5000)
