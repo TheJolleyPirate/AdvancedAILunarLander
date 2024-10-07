@@ -14,7 +14,7 @@ from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
 
-num_episodes = 5_000
+num_timesteps = 5_000
 
 show_progress_bar = False
 try:

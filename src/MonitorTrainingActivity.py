@@ -1,33 +1,63 @@
-from datetime import datetime, timedelta
-from time import sleep
-import gymnasium as gym
+from typing import Optional
 import matplotlib.pyplot as plt
-import numpy as np
-
-from datetime import datetime
+from stable_baselines3 import SAC
 from novelty.NoveltyDirector import NoveltyDirector
-from stable_baselines3.common.logger import configure
 from stable_baselines3.common.callbacks import BaseCallback
 
+from src.hyperparameters import LoadHyperparameters
 from src.novelty.NoveltyName import NoveltyName
-from src.exceptions.NoModelException import NoModelException
-from src.training.ModelTraining import continueTrainingModel, trainNewModel
+from src.training.ModelAccess import saveModel
 from training import ModelAccess
 
 
-def training_activity(novelty_name=NoveltyName.ORIGINAL):
-    env_novelty = NoveltyName.ORIGINAL
-    model_novelty = NoveltyName.ORIGINAL
-    
+def monitor_training(env_novelty=NoveltyName.ORIGINAL,
+                      used_model_name: Optional[NoveltyName]=None,
+                      num_episodes=5000):
     env = NoveltyDirector(env_novelty).build_env()
-    
-    model = ModelAccess.loadModel(model_novelty)
-    model.set_env(env)
 
-    new_logger = configure('log/sac', ["stdout", "csv"])
-    model.set_logger(new_logger)
-    
-    model = model.learn(total_timesteps=10000, log_interval=1, callback=EpisodeRewardCallback())
+    if used_model_name is None:
+        params = LoadHyperparameters.load()  # FIXME: not good practice of loading file.
+        model = SAC(env=env,
+                    batch_size=params.batch_size,
+                    buffer_size=params.buffer_size,
+                    ent_coef=params.ent_coef,
+                    gamma=params.gamma,
+                    gradient_steps=params.gradient_steps,
+                    learning_rate=params.learning_rate,
+                    policy=params.policy,
+                    policy_kwargs=params.policy_kwargs,
+                    verbose=1)
+    else:
+        model = ModelAccess.loadModel(used_model_name)
+    model.set_env(env)
+    rewards = []
+
+
+    if used_model_name is None:
+        printed_model_name = "original"
+    else:
+        printed_model_name = used_model_name.value
+    print(f"Start training environment of {env_novelty.value} "
+          f"with model of {printed_model_name} "
+          f"for {num_episodes} episodes")
+
+    for i in range(num_episodes):
+        callback = EpisodeRewardCallback()
+        model = model.learn(total_timesteps=10000, log_interval=1, callback=callback)
+        rewards.append(callback.get_reward())
+        if i in [int(num_episodes / 5 * j) for j in range(1, 6)]:
+            print(f"Current progress: trained {i} episodes with reward {rewards[len(rewards) - 1]}")
+    saveModel(model, env_novelty)
+    print(rewards)
+    plot(rewards, f"env-{env_novelty.value} model-{printed_model_name} ep-{num_episodes}")
+
+def plot(array, filename):
+    # Create a heatmap plot
+    plt.plot(array)
+    plt.xlabel("Episode")
+    plt.ylabel("Reward")
+    plt.title("Rewards over Episodes")
+    plt.savefig(f"{filename}.png")
 
 
 class EpisodeRewardCallback(BaseCallback):
@@ -44,13 +74,11 @@ class EpisodeRewardCallback(BaseCallback):
     
 
     def _on_training_end(self) -> None:
-        print(f"Episode finished with reward: {self.reward}")
+        return None
 
     
     def get_reward(self):
         return self.reward
 
-
-
 if __name__ == "__main__":
-    training_activity()
+    monitor_training(num_episodes=5000)

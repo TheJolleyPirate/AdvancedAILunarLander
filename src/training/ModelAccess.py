@@ -11,14 +11,14 @@ from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
 
 date_format = "%Y%m%d-%H%M%S"
-parent_folder = "./models/"
+parent_folder = "models"
 
 
 def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     # create directory
     if not os.path.exists(parent_folder):
         os.makedirs(parent_folder)
-    model_path = os.path.join(parent_folder, novelty_name.value)
+    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
