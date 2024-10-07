@@ -14,11 +14,29 @@ date_format = "%Y%m%d-%H%M%S"
 parent_folder = "./models/"
 
 
-def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
-    # create directory
+# def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
+#     # create directory
+#     if not os.path.exists(parent_folder):
+#         os.makedirs(parent_folder)
+#     model_path = os.path.join(parent_folder, novelty_name.value)
+#     if not os.path.exists(model_path):
+#         os.makedirs(model_path)
+#
+#     filename = datetime.now().strftime(date_format)
+#     model.save(os.path.join(model_path, filename))
+
+
+def saveModel(model: OffPolicyAlgorithm, novelty_name):
+    if isinstance(novelty_name, NoveltyName):
+        novelty_value = novelty_name.value  # Use .value if it's a NoveltyName type
+    elif isinstance(novelty_name, str):
+        novelty_value = novelty_name  # Use the string directly
+    else:
+        raise ValueError("novelty_name must be either a NoveltyName enum or a string.")
+
     if not os.path.exists(parent_folder):
         os.makedirs(parent_folder)
-    model_path = os.path.join(parent_folder, novelty_name.value)
+    model_path = os.path.join(parent_folder, novelty_value)
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
