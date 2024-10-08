@@ -1,0 +1,79 @@
+import argparse
+from datetime import datetime, timedelta
+from time import sleep
+from src.Novelty.NoveltyName import NoveltyName, noveltyList
+from src.Novelty.NoveltyDirector import NoveltyDirector
+from src.exceptions.NoModelException import NoModelException
+from src.training.ModelTraining import continueTrainingModel, trainNewModel
+from src.hyperparameters import LoadHyperparameters
+from stable_baselines3 import SAC
+import gymnasium as gym
+from src.training.ModelAccess import saveModel, loadModel
+
+import random
+
+def training_multitask_learning(render = None, continuous = True, trainTime = 1):
+    """
+    Trains agent on multiple novelties in a randomised way that allows it to generalise for new novelties.
+    Saves model after training under models/multitask-learning
+    """
+
+    # Set duration of training period
+    start_time = datetime.now()
+    end_time = start_time + timedelta(hours=trainTime)
+
+    # Set of novelties
+    training_novelties = [NoveltyName.ORIGINAL, NoveltyName.ATMOSPHERE, NoveltyName.THRUSTER, NoveltyName.GRAVITY, NoveltyName.TURBULENCE, NoveltyName.SENSOR]
+
+    while datetime.now() < end_time:
+        random_novelty = random.choice(training_novelties) # Choose a random novelty from the set
+        env = NoveltyDirector(random_novelty).build_env(render, continuous) # Create a new environment for that novelty
+        try:
+            # Train the model for a single episode in the randomly chosen novelty
+            continueTrainingModel(random_novelty, random_novelty)
+            sleep(20)
+        except NoModelException:
+            # Load model and train the next episode in the randomly chosen novelty
+            trainNewModel(env, random_novelty)
+
+
+
+if __name__ == "__main__":
+    #USAGE:
+    #       python TrainingActivity.py
+    #       python TrainingActivity.py -n "NOVELTY"
+    # or    python TrainingActivity.py -n "NOVELTY" -r "render_mode"
+    # or    python TrainingActivity.py -nc
+    # or    python TrainingActivity.py -n "NOVELTY" -nc
+    # or    python TrainingActivity.py -n "NOVELTY" -r "render_mode" -nc
+
+    parser = argparse.ArgumentParser(prog="TrainingActivity",
+                                     description="the training activity to train the agents, can be trained on "
+                                                 "multiple different novelties")
+    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
+    defaultNovelty = NoveltyName.ORIGINAL
+    allowedNovelties = noveltyList()
+    parser.add_argument("-n", "--novelty", default=defaultNovelty, choices=allowedNovelties,
+                        help="the novelty you want to train the agent on")
+    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
+    defaultRender = None
+    allowedRenders = [None, "human"]
+    parser.add_argument("-r", "--render_mode", default=defaultRender, choices=allowedRenders,
+                        help="the render mode you want to use")
+    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI
+    defaultContinous = True
+    parser.add_argument("-nc", "--not_continuous", action="store_true", default=(not defaultContinous),
+                        help="set this if you want the agent to be non-continuous (discrete)")
+    parser.add_argument("-t", "--training_time", type=int, default=4,
+                        help="the amount of time to train the for; default 4")
+    args = parser.parse_args()
+    noveltyName = args.novelty
+    trainingNovelty = defaultNovelty
+    # for n in NoveltyName:
+    #     if n.value == noveltyName:
+    #         trainingNovelty = n
+    trainingRenderMode = args.render_mode
+    trainingContinuous = not args.not_continuous
+    trainingTime = args.training_time
+
+    training_multitask_learning(trainingRenderMode, trainingContinuous, trainingTime)
