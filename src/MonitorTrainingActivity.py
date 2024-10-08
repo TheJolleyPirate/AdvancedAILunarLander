@@ -4,18 +4,19 @@ from stable_baselines3 import SAC
 from novelty.NoveltyDirector import NoveltyDirector
 from stable_baselines3.common.callbacks import BaseCallback
 
+from src.exceptions.NoModelException import NoModelException
 from src.hyperparameters import LoadHyperparameters
-from src.novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName, noveltyList
 from src.training.ModelAccess import saveModel
 from training import ModelAccess
 
 
 def monitor_training(env_novelty=NoveltyName.ORIGINAL,
-                      used_model_name: Optional[NoveltyName]=None,
+                      model_name: Optional[NoveltyName]=None,
                       num_episodes=5000):
     env = NoveltyDirector(env_novelty).build_env()
 
-    if used_model_name is None:
+    if model_name is None:
         params = LoadHyperparameters.load()
         model = SAC(env=env,
                     batch_size=params.batch_size,
@@ -28,14 +29,17 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
                     policy_kwargs=params.policy_kwargs,
                     verbose=1)
     else:
-        model = ModelAccess.loadModel(used_model_name)
+        try:
+            model = ModelAccess.loadModel(env_novelty)
+        except NoModelException:
+            model = ModelAccess.loadModel(model_name)
     model.set_env(env)
     rewards = []
 
-    if used_model_name is None:
+    if model_name is None:
         printed_model_name = "original"
     else:
-        printed_model_name = used_model_name.value
+        printed_model_name = model_name.value
     print(f"Start training environment of {env_novelty.value} "
           f"with model of {printed_model_name} "
           f"for {num_episodes} episodes")
@@ -79,15 +83,22 @@ class EpisodeRewardCallback(BaseCallback):
         return self.reward
 
 
-def main(target_novelty: Optional[NoveltyName] = None):
+def main(target_novelty: Optional[NoveltyName] = None,
+         model_novelty: Optional[NoveltyName] = None,
+         num_episodes = 5000):
     if target_novelty is None:
         # train all of them
         for novelty in NoveltyName:
             if novelty == NoveltyName.ORIGINAL:
                 continue
-            monitor_training(env_novelty=novelty, num_episodes=5000)
+            monitor_training(env_novelty=novelty,
+                             model_name=model_novelty,
+                             num_episodes=num_episodes)
     else:
-        monitor_training(env_novelty=target_novelty, num_episodes=5000)
+        monitor_training(env_novelty=target_novelty,
+                         model_name=model_novelty,
+                         num_episodes=num_episodes)
 
 if __name__ == "__main__":
-    main()
+    main(NoveltyName.SENSOR, NoveltyName.ORIGINAL, 100)
+    main(NoveltyName.SENSOR, NoveltyName.SENSOR, 100)
