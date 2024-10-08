@@ -35,7 +35,9 @@ class LimitedSensor(gym.Env):
         high.append(1.5)
         high.append(1.5)
         high.append(1.5)
-        self.observation_space = spaces.Box(np.array(low).astype(np.float32), np.array(high).astype(np.float32))
+        self.observation_space = spaces.Box(low=np.array(low),
+                                            high=np.array(high),
+                                            dtype=np.float32)
 
     def step(self, action):
         state, reward, terminated, truncated, info = self.env.step(action)

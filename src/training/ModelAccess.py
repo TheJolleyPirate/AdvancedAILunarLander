@@ -32,16 +32,16 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
         print(os.listdir())
         raise NoModelException(novelty_name)
     # check sub-folder
-    model_path = os.path.join(parent_folder, novelty_name.value)
+    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
     if not os.path.exists(model_path):
         raise NoModelException(novelty_name)
 
     filenames = os.listdir(model_path)
     if len(filenames) == 0:
         raise NoModelException(novelty_name)
-    latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
-    print(f"Model loaded: {latest_filename}")
-    p = os.path.join(parent_folder, novelty_name.value, latest_filename)
+    latest_filename = sorted(filenames, reverse=True)[0].removesuffix(".zip")
+    p = os.path.join(model_path, latest_filename)
     env = NoveltyDirector(novelty_name).build_env()
     loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space, 'action_space': env.action_space})
+    print(f"Model loaded: {latest_filename}")
     return loadedModel
