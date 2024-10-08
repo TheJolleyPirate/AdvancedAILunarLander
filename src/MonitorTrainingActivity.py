@@ -45,7 +45,7 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
         callback = EpisodeRewardCallback()
         model = model.learn(total_timesteps=10000, log_interval=1, callback=callback)
         rewards.append(callback.get_reward())
-        if i in [int(num_episodes / 5 * j) for j in range(1, 6)]:
+        if i in [int(num_episodes / 5 * j) for j in range(1, 11)]:
             print(f"Current progress: trained {i} episodes with reward {rewards[len(rewards) - 1]}")
     saveModel(model, env_novelty)
     print(rewards)
