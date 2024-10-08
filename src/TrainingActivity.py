@@ -7,16 +7,17 @@ from src.exceptions.NoModelException import NoModelException
 from src.training.ModelTraining import continueTrainingModel, trainNewModel
 
 
+
 def training_activity(novel_name=NoveltyName.ORIGINAL, render = None, continuous = True, trainTime = 4):
     env = NoveltyDirector(novel_name).build_env(render, continuous)
     start_time = datetime.now()
     end_time = start_time + timedelta(hours=trainTime)
     while datetime.now() < end_time:
         try:
-            continueTrainingModel(env=env, novelty_name=novel_name)
+            continueTrainingModel(novel_name, novel_name)
             sleep(20)
         except NoModelException:
-            trainNewModel(env=env, novelty_name=novel_name)
+            trainNewModel(novel_name, novel_name)
 
 
 if __name__ == "__main__":

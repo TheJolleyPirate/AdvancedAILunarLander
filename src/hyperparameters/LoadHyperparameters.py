@@ -1,11 +1,16 @@
+from fileinput import filename
+from typing import Optional
+
 import yaml
 
 from src.hyperparameters.Hyperparameters import HyperParameters
 
 
-def load(filename: str):
+def load(file_name: Optional[str] = None):
+    if file_name is None:
+        return HyperParameters()
     try:
-        with open(filename) as file:
+        with open(file_name) as file:
             # FIXME consider using package to load dictionary
 
             params_dict = yaml.safe_load(file)["LunarLanderContinuous-v2"]
@@ -21,5 +26,9 @@ def load(filename: str):
             params.gradient_steps = params_dict["gradient_steps"]
             params.learning_starts = params_dict["learning_starts"]
             return params
-    except RuntimeError:
+    except FileNotFoundError:
+        print(f"File {file_name} not found.")
         return HyperParameters()
+
+
+
