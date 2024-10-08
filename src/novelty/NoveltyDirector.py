@@ -15,10 +15,11 @@ class NoveltyDirector:
     def __init__(self, novelty: NoveltyName = NoveltyName.ORIGINAL):
         self.novelty = novelty
 
-    def build_env(self, render_mode=None, continuous: bool = True) -> Monitor:
+    def build_env(self, render_mode=None, continuous: bool = True):
         env = self._find_env(render_mode=render_mode, continuous=continuous)
         env.num_envs = 1
-        return Monitor(env)
+        # return Monitor(env)
+        return env
 
     def _find_env(self, render_mode=None, continuous: bool = True):
         if self.novelty == NoveltyName.THRUSTER:

@@ -16,7 +16,7 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
     env = NoveltyDirector(env_novelty).build_env()
 
     if used_model_name is None:
-        params = LoadHyperparameters.load()  # FIXME: not good practice of loading file.
+        params = LoadHyperparameters.load()
         model = SAC(env=env,
                     batch_size=params.batch_size,
                     buffer_size=params.buffer_size,
@@ -32,7 +32,6 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
     model.set_env(env)
     rewards = []
 
-
     if used_model_name is None:
         printed_model_name = "original"
     else:
@@ -43,7 +42,7 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
 
     for i in range(num_episodes):
         callback = EpisodeRewardCallback()
-        model = model.learn(total_timesteps=10000, log_interval=1, callback=callback)
+        model = model.learn(total_timesteps=4000, log_interval=1, callback=callback, progress_bar=True)
         rewards.append(callback.get_reward())
         if i in [int(num_episodes / 5 * j) for j in range(1, 11)]:
             print(f"Current progress: trained {i} episodes with reward {rewards[len(rewards) - 1]}")
@@ -58,7 +57,6 @@ def plot(array, filename):
     plt.ylabel("Reward")
     plt.title("Rewards over Episodes")
     plt.savefig(f"{filename}.png")
-
 
 class EpisodeRewardCallback(BaseCallback):
 
@@ -79,6 +77,7 @@ class EpisodeRewardCallback(BaseCallback):
     
     def get_reward(self):
         return self.reward
+
 
 def main(target_novelty: Optional[NoveltyName] = None):
     if target_novelty is None:
