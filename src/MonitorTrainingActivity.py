@@ -80,7 +80,7 @@ class EpisodeRewardCallback(BaseCallback):
     def get_reward(self):
         return self.reward
 
-def main(target_novelty: NoveltyName):
+def main(target_novelty: Optional[NoveltyName] = None):
     if target_novelty is None:
         # train all of them
         for novelty in NoveltyName:
@@ -91,4 +91,4 @@ def main(target_novelty: NoveltyName):
         monitor_training(env_novelty=target_novelty, num_episodes=5000)
 
 if __name__ == "__main__":
-    main(NoveltyName.SENSOR)
+    main()
