@@ -8,8 +8,8 @@ from stable_baselines3 import SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from src.novelty.NoveltyDirector import NoveltyDirector
-from src.novelty.NoveltyName import NoveltyName
+from src.Novelty.NoveltyDirector import NoveltyDirector
+from src.Novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import saveModel, loadModel
 
@@ -29,7 +29,7 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
     print("Training new model for novelty: " + novelty_name.value)
     
     if not isinstance(env, Monitor):
-        print("Wrapping env with Monitor for presetation.")
+        print("Wrapping env with Monitor for presentation.")
         env = Monitor(env)
     
     params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
