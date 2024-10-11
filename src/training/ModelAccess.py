@@ -77,6 +77,7 @@ def _load_model(novelty_name: NoveltyName, path_name: str, verbose: bool = False
 def load_latest(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     files = _list_trained(novelty_name)
     latest_name = sorted(files, reverse=True)[0]
+    print(f"{novelty_name.value.upper()} latest model {latest_name} selected.")
     return _load_model(novelty_name, latest_name)
 
 
@@ -94,7 +95,7 @@ def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
         if mean > best_mean:
             target = i
             best_mean = mean
-    print(f"{novelty_name.value.upper()} model with mean of {round(best_mean, 2)} selected.")
+    print(f"{novelty_name.value.upper()} model {files[target]} with mean of {round(best_mean, 2)} selected.")
     return _load_model(novelty_name, files[target])
 
 
