@@ -29,12 +29,12 @@ def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
 
 
 def _model_path(novelty_name: NoveltyName) -> str:
+    folder_path = os.path.join(os.getcwd(), "..", "..", parent_folder)
     # check non-empty folder
-    if not os.path.exists(parent_folder):
-        print(os.listdir())
-        raise NoModelException(novelty_name)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     # check sub-folder
-    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
+    model_path = os.path.join(folder_path, novelty_name.value)
     return model_path
 
 

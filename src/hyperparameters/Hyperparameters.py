@@ -6,7 +6,7 @@ class HyperParameters:
             self,
             n_timesteps: float = 50000,
             policy: str = 'MlpPolicy',
-            learning_rate: float = 3e-4,
+            learning_rate: float = 0.01,
             buffer_size: int = 1_000_000,
             batch_size: int = 256,
             ent_coef: float = 0.1,
