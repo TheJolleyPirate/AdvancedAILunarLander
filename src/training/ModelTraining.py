@@ -1,3 +1,5 @@
+from typing import Optional
+
 import gymnasium as gym
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,10 +11,13 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
 from src.evaluation.ModelEvaluation import evaluate
+from src.hyperparameters.Hyperparameters import HyperParameters
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import save_model, loadModel, load_best_model
+from src.training.TrainingResult import TrainingResult
+from src.training.TuningParameters import set_hyperparameters
 
 num_timesteps = 10_000
 
@@ -68,27 +73,32 @@ def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
     return model
 
 
-def continuous_with_decaying_learning(
+def train_dynamic_params(
         env_novelty: NoveltyName = NoveltyName.ORIGINAL,
         model_novelty: NoveltyName = NoveltyName.ORIGINAL,
-        decaying_factor: float = 0.95):
+        params: HyperParameters = Optional[None]) -> TrainingResult:
     env = NoveltyDirector(env_novelty).build_env()
     num_episodes = 100
 
     prev_model = load_best_model(model_novelty)
     prev_mean = evaluate(prev_model, env, num_episodes)
 
+    # setting environment
     prev_model.set_env(env)
 
     print("Retraining model for novelty: " + model_novelty.value)
+    # load hyperparameters
+    if params is not None:
+        set_hyperparameters(params, prev_model)
     current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
     current_mean = evaluate(current_model, env, num_episodes)
 
     if current_mean > prev_mean:
-        current_model.learning_rate = current_model.learning_rate * decaying_factor
         save_model(current_model, model_novelty)
-        return current_model
+        return TrainingResult(current_model, params, True)
 
     else:
         print("Model not saved due to non-improving average reward.")
-        return prev_model
+        return TrainingResult(prev_model, params, False)
+
+

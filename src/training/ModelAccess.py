@@ -28,6 +28,7 @@ def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     model.save(os.path.join(model_path, filename))
 
 
+
 def _model_path(novelty_name: NoveltyName) -> str:
     folder_path = os.path.join(os.getcwd(), "..", "..", parent_folder)
     # check non-empty folder

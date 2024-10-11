@@ -30,3 +30,5 @@ class HyperParameters:
         self.tau = tau
         self.learning_starts = learning_starts
         self.use_sde = use_sde
+        self.MAX_LEARNING_RATE = 0.5
+
