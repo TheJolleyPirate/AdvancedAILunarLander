@@ -19,9 +19,7 @@ parent_folder = "models"
 
 def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     # create directory
-    if not os.path.exists(parent_folder):
-        os.makedirs(parent_folder)
-    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
+    model_path = _model_path(novelty_name)
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
@@ -72,13 +70,13 @@ def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     files = _list_trained(novelty_name)
     target = 0
     best_mean = 1 - sys.maxsize
+    # find index of best model.
     for i in range(len(files)):
         model = _load_model(novelty_name, files[i])
         mean = ModelEvaluation().evaluate(model, model.env)
         if mean > best_mean:
             target = i
             best_mean = mean
-
     return _load_model(novelty_name, files[target])
 
 
