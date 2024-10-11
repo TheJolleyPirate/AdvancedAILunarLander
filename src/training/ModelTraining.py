@@ -80,7 +80,7 @@ def train_last(
     env = NoveltyDirector(env_novelty).build_env()
     prev_model, prev_filename = load_latest_model(model_novelty)
     num_episodes = 100
-    return _train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
+    return train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
 
 
 def train_best(
@@ -90,10 +90,10 @@ def train_best(
     env = NoveltyDirector(env_novelty).build_env()
     prev_model, prev_filename = load_best_model(model_novelty)
     num_episodes = 100
-    return _train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
+    return train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
 
 
-def _train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes: int = 100):
+def train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes: int = 100):
     prev_model.set_env(env)
     prev_mean = evaluate(prev_model, env, num_episodes)
 

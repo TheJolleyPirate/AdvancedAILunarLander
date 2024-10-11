@@ -9,6 +9,7 @@ from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
 from src.evaluation import ModelEvaluation
+from src.evaluation.EvaluationManager import EvaluationManager
 from src.evaluation.ModelEvaluation import evaluate
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
@@ -121,3 +122,28 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
                                                             'action_space': env.action_space})
     print(f"{novelty_name.value.upper()} model loaded: {latest_filename}")
     return loadedModel
+
+
+class ModelAccess:
+
+    def __init__(self, novelty_name: NoveltyName):
+        self.novelty_name = novelty_name
+
+        env = NoveltyDirector(novelty_name).build_env()
+        self.evaluation = EvaluationManager(env, novelty_name)
+        self._load_models()
+
+    def _load_models(self):
+        files = _list_trained(novelty_name=self.novelty_name)
+        for f in files:
+            model = _load_model(self.novelty_name, f)
+            self.evaluation.add_model(f, model)
+
+    def get_best(self):
+        return self.evaluation.get_best()
+
+    def get_latest(self):
+        return self.evaluation.get_latest()
+
+    def add_model(self, name, model):
+        return self.evaluation.add_model(name, model)
