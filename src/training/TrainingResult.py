@@ -5,7 +5,12 @@ from src.hyperparameters.Hyperparameters import HyperParameters
 
 class TrainingResult:
 
-    def __init__(self, model: OffPolicyAlgorithm, params: HyperParameters, success: bool):
+    def __init__(self,
+                 model: OffPolicyAlgorithm,
+                 params: HyperParameters,
+                 success: bool,
+                 filename: str = ""):
         self.model = model
         self.params = params
         self.success = success
+        self.filename = filename

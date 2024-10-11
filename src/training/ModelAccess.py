@@ -18,15 +18,16 @@ date_format = "%Y%m%d-%H%M%S"
 parent_folder = "models"
 
 
-def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
+def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName) -> str:
     # create directory
     model_path = _model_path(novelty_name)
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
     filename = datetime.now().strftime(date_format)
-    model.save(os.path.join(model_path, filename))
-
+    complete_filename = os.path.join(model_path, filename)
+    model.save(complete_filename)
+    return complete_filename
 
 
 def _model_path(novelty_name: NoveltyName) -> str:
@@ -74,14 +75,14 @@ def _load_model(novelty_name: NoveltyName, path_name: str, verbose: bool = False
     return loadedModel
 
 
-def load_latest(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
+def load_latest_model(novelty_name: NoveltyName) -> (OffPolicyAlgorithm, str):
     files = _list_trained(novelty_name)
     latest_name = sorted(files, reverse=True)[0]
     print(f"{novelty_name.value.upper()} latest model {latest_name} selected.")
-    return _load_model(novelty_name, latest_name)
+    return _load_model(novelty_name, latest_name), latest_name
 
 
-def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
+def load_best_model(novelty_name: NoveltyName) -> (OffPolicyAlgorithm, str):
     files = _list_trained(novelty_name)
     target = 0
     best_mean = 1 - sys.maxsize
@@ -96,7 +97,7 @@ def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
             target = i
             best_mean = mean
     print(f"{novelty_name.value.upper()} model {files[target]} with mean of {round(best_mean, 2)} selected.")
-    return _load_model(novelty_name, files[target])
+    return _load_model(novelty_name, files[target]), files[target]
 
 
 def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
