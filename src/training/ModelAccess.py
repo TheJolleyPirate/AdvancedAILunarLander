@@ -1,4 +1,6 @@
 import os
+import sys
+from typing import List
 
 import gymnasium as gym
 from datetime import datetime
@@ -6,6 +8,7 @@ from datetime import datetime
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
+from src.evaluation.ModelEvaluation import ModelEvaluation
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
@@ -14,7 +17,7 @@ date_format = "%Y%m%d-%H%M%S"
 parent_folder = "models"
 
 
-def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
+def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     # create directory
     if not os.path.exists(parent_folder):
         os.makedirs(parent_folder)
@@ -26,22 +29,77 @@ def saveModel(model: OffPolicyAlgorithm, novelty_name: NoveltyName):
     model.save(os.path.join(model_path, filename))
 
 
+def _model_path(novelty_name: NoveltyName) -> str:
+    # check non-empty folder
+    if not os.path.exists(parent_folder):
+        print(os.listdir())
+        raise NoModelException(novelty_name)
+    # check sub-folder
+    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
+    return model_path
+
+
+def _list_trained(novelty_name: NoveltyName) -> List[str]:
+    model_path = _model_path(novelty_name)
+    if not os.path.exists(model_path):
+        raise NoModelException(novelty_name)
+
+    # get all filenames in the folder. Assume all .zip files.
+    filenames = os.listdir(model_path)
+    if len(filenames) == 0:
+        raise NoModelException(novelty_name)
+
+    return [os.path.join(model_path, f.removesuffix(".zip")) for f in filenames]
+
+
+def _load_model(novelty_name: NoveltyName, path_name: str) -> OffPolicyAlgorithm:
+    env = NoveltyDirector(novelty_name).build_env()
+    loadedModel = SAC.load(path=path_name,
+                           env=env,
+                           custom_objects={'observation_space': env.observation_space,
+                                           'action_space': env.action_space})
+    print(f"Model loaded: {path_name}")
+    return loadedModel
+
+
+def load_latest(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
+    files = _list_trained(novelty_name)
+    latest_name = sorted(files, reverse=True)[0]
+    return _load_model(novelty_name, latest_name)
+
+
+def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
+    files = _list_trained(novelty_name)
+    target = 0
+    best_mean = 1 - sys.maxsize
+    for i in range(len(files)):
+        model = _load_model(novelty_name, files[i])
+        mean = ModelEvaluation().evaluate(model, model.env)
+        if mean > best_mean:
+            target = i
+            best_mean = mean
+
+    return _load_model(novelty_name, files[target])
+
+
 def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     # check non-empty folder
     if not os.path.exists(parent_folder):
         print(os.listdir())
         raise NoModelException(novelty_name)
     # check sub-folder
-    model_path = os.path.join(parent_folder, novelty_name.value)
+    model_path = os.path.join(os.getcwd(), "..", parent_folder, novelty_name.value)
     if not os.path.exists(model_path):
         raise NoModelException(novelty_name)
 
     filenames = os.listdir(model_path)
     if len(filenames) == 0:
         raise NoModelException(novelty_name)
-    latest_filename = path=sorted(filenames, reverse=True)[0].removesuffix(".zip")
-    print(f"Model loaded: {latest_filename}")
-    p = os.path.join(parent_folder, novelty_name.value, latest_filename)
+
+    latest_filename = sorted(filenames, reverse=True)[0].removesuffix(".zip")
+    p = os.path.join(model_path, latest_filename)
     env = NoveltyDirector(novelty_name).build_env()
-    loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space, 'action_space': env.action_space})
+    loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space,
+                                                            'action_space': env.action_space})
+    print(f"Model loaded: {latest_filename}")
     return loadedModel

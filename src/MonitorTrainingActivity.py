@@ -7,7 +7,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 from src.exceptions.NoModelException import NoModelException
 from src.hyperparameters import LoadHyperparameters
 from src.novelty.NoveltyName import NoveltyName, noveltyList
-from src.training.ModelAccess import saveModel
+from src.training.ModelAccess import save_model
 from training import ModelAccess
 
 
@@ -50,7 +50,7 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
         rewards.append(callback.get_reward())
         if i in [int(num_episodes / 5 * j) for j in range(1, 11)]:
             print(f"Current progress: trained {i} episodes with reward {rewards[len(rewards) - 1]}")
-    saveModel(model, env_novelty)
+    save_model(model, env_novelty)
     print(rewards)
     plot(rewards, f"env-{env_novelty.value} model-{printed_model_name} ep-{num_episodes}")
 
