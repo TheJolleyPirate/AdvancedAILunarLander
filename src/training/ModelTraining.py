@@ -11,7 +11,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
-from src.training.ModelAccess import saveModel, loadModel
+from src.training.ModelAccess import save_model, loadModel
 
 
 num_timesteps = 5_000
@@ -50,7 +50,7 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
 
     model.N_TIMESTEPS = params.n_timesteps
     model.learn(total_timesteps=model.N_TIMESTEPS, progress_bar=True)
-    saveModel(model, novelty_name)
+    save_model(model, novelty_name)
     return model
 
 
@@ -63,5 +63,5 @@ def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
 
     print("Retraining model for novelty: " + model_novelty.value)
     model = model.learn(total_timesteps=num_episodes, progress_bar=show_progress_bar)
-    saveModel(model, model_novelty)
+    save_model(model, model_novelty)
     return model
