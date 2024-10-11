@@ -17,7 +17,7 @@ from src.novelty.NoveltyName import NoveltyName
 from src.hyperparameters import LoadHyperparameters
 from src.training.ModelAccess import save_model, loadModel, load_best_model
 from src.training.TrainingResult import TrainingResult
-from src.training.TuningParameters import set_hyperparameters
+from src.training.TuningParameters import set_hyperparameters, get_hyperparameters
 
 num_timesteps = 10_000
 
@@ -95,10 +95,10 @@ def train_dynamic_params(
 
     if current_mean > prev_mean:
         save_model(current_model, model_novelty)
-        return TrainingResult(current_model, params, True)
+        return TrainingResult(current_model, get_hyperparameters(current_model), True)
 
     else:
         print("Model not saved due to non-improving average reward.")
-        return TrainingResult(prev_model, params, False)
+        return TrainingResult(prev_model, get_hyperparameters(prev_model), False)
 
 
