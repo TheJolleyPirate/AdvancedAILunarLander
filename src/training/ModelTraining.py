@@ -29,9 +29,9 @@ except ImportError:
 def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
     print("Training new model for novelty: " + novelty_name.value)
     
-    if not isinstance(env, Monitor):
-        print("Wrapping env with Monitor for presentation.")
-        env = Monitor(env)
+    # if not isinstance(env, Monitor):
+    #     print("Wrapping env with Monitor for presentation.")
+    #     env = Monitor(env)
     
     params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
     

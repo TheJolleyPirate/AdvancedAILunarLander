@@ -5,7 +5,7 @@ from src.Util import adapt_observation
 from gymnasium.envs.box2d.lunar_lander import LunarLander
 
 
-def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100):
+def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100, verbose: bool = False):
     rewards = []
     shape_trained = model.env.observation_space.shape[0]
     for _ in range(n_episodes):
@@ -25,8 +25,12 @@ def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100)
         rewards.append(tmp)
     mean_reward = round(statistics.mean(rewards), 2)
     std_reward = round(statistics.stdev(rewards), 2)
-    print(f"Number of episodes for evaluation: {n_episodes}")
-    print(f"Mean reward: {mean_reward}")
-    print(f"Standard deviation: {std_reward}")
-    print(f"Min: {min(rewards)}")
-    print(f"Max: {max(rewards)}")
+
+    if verbose:
+        print(f"Number of episodes for evaluation: {n_episodes}")
+        print(f"Mean reward: {mean_reward}")
+        print(f"Standard deviation: {std_reward}")
+        print(f"Min: {min(rewards)}")
+        print(f"Max: {max(rewards)}")
+
+    return mean_reward

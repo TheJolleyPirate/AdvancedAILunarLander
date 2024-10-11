@@ -51,13 +51,25 @@ def _list_trained(novelty_name: NoveltyName) -> List[str]:
     return [os.path.join(model_path, f.removesuffix(".zip")) for f in filenames]
 
 
-def _load_model(novelty_name: NoveltyName, path_name: str) -> OffPolicyAlgorithm:
+def _load_model(novelty_name: NoveltyName, path_name: str, verbose: bool = False) -> OffPolicyAlgorithm:
     env = NoveltyDirector(novelty_name).build_env()
-    loadedModel = SAC.load(path=path_name,
-                           env=env,
-                           custom_objects={'observation_space': env.observation_space,
-                                           'action_space': env.action_space})
-    print(f"Model loaded: {path_name}")
+
+    if not verbose:
+        # suppress printing the Wrapping message by stable-baselines3
+        import contextlib
+        with contextlib.redirect_stdout(open(os.devnull, 'w')):
+            print("This will not be printed")
+            loadedModel = SAC.load(path=path_name,
+                                   env=env,
+                                   custom_objects={'observation_space': env.observation_space,
+                                                   'action_space': env.action_space})
+    else:
+        loadedModel = SAC.load(path=path_name,
+                               env=env,
+                               custom_objects={'observation_space': env.observation_space,
+                                               'action_space': env.action_space})
+    if verbose:
+        print(f"Model loaded: {path_name}")
     return loadedModel
 
 
@@ -71,13 +83,17 @@ def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     files = _list_trained(novelty_name)
     target = 0
     best_mean = 1 - sys.maxsize
+
+    # has to build env again, as stable-baselines3 wrapper not updated
+    env = NoveltyDirector(novelty_name).build_env()
     # find index of best model.
     for i in range(len(files)):
         model = _load_model(novelty_name, files[i])
-        mean = evaluate(model, model.env)
+        mean = evaluate(model, env)
         if mean > best_mean:
             target = i
             best_mean = mean
+    print(f"{novelty_name.value.upper()} model with mean of {round(best_mean, 2)} selected.")
     return _load_model(novelty_name, files[target])
 
 
@@ -100,5 +116,5 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     env = NoveltyDirector(novelty_name).build_env()
     loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space,
                                                             'action_space': env.action_space})
-    print(f"Model loaded: {latest_filename}")
+    print(f"{novelty_name.value.upper()} model loaded: {latest_filename}")
     return loadedModel
