@@ -1,6 +1,8 @@
 import argparse
 
 from src.Util import adapt_observation
+from src.evaluation import ModelEvaluation
+from src.evaluation.ModelEvaluation import evaluate
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName, noveltyList
 from src.exceptions.NoModelException import NoModelException
@@ -10,7 +12,7 @@ import statistics
 
 def runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous):
     # load environment
-    env = NoveltyDirector(novelty).build_env(render_mode="rgb_array", continuous=continuous)
+    env = NoveltyDirector(novelty).build_env(render_mode="human", continuous=continuous)
     
     # load model
     try:
@@ -40,32 +42,6 @@ def main(novelty: NoveltyName, agent: NoveltyName, render: str, continuous: bool
             runSingleNovelty(currentNovelty, agent, numEvalEpisodes, render, continuous)
     else:
         runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous)
-
-def evaluate(model, env: LunarLander, n_episodes: int = 100):
-    rewards = []
-    shape_trained = model.env.observation_space.shape[0]
-    for _ in range(n_episodes):
-        tmp, count_failed_eval = 0, 0
-        observation, _ = env.reset()
-        done = False
-        while not done:
-            observation = adapt_observation(observation, shape_trained)
-            action, _ = model.predict(observation, deterministic=True)
-            try:
-                observation, reward, done, truncated, _ = env.step(action)
-            except RuntimeError:
-                count_failed_eval += 1
-            tmp += reward
-        if count_failed_eval > 0:
-            print(f"Failed to evaluate this novelty for {count_failed_eval} time(s).")
-        rewards.append(tmp)
-    mean_reward = round(statistics.mean(rewards), 2)
-    std_reward = round(statistics.stdev(rewards), 2)
-    print(f"Number of episodes for evaluation: {n_episodes}")
-    print(f"Mean reward: {mean_reward}")
-    print(f"Standard deviation: {std_reward}")
-    print(f"Min: {min(rewards)}")
-    print(f"Max: {max(rewards)}")
 
 
 if __name__ == '__main__':

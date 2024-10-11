@@ -8,7 +8,8 @@ from datetime import datetime
 from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
-from src.evaluation.ModelEvaluation import ModelEvaluation
+from src.evaluation import ModelEvaluation
+from src.evaluation.ModelEvaluation import evaluate
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
@@ -73,7 +74,7 @@ def load_best_model(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     # find index of best model.
     for i in range(len(files)):
         model = _load_model(novelty_name, files[i])
-        mean = ModelEvaluation().evaluate(model, model.env)
+        mean = evaluate(model, model.env)
         if mean > best_mean:
             target = i
             best_mean = mean
