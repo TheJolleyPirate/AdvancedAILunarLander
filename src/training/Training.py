@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from time import sleep
 
-from src.hyperparameters import Hyperparameters
+from src.hyperparameters.Hyperparameters import HyperParameters
 from src.novelty.NoveltyName import NoveltyName
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.exceptions.NoModelException import NoModelException
@@ -34,7 +34,7 @@ class Training:
         env = NoveltyDirector(self.novelty_name).build_env(self.render, self.continuous)
 
         # dynamic updatable params
-        params: Hyperparameters = None
+        params: HyperParameters = HyperParameters()
         recent_success = []
         recent_files = []
         queue_size = 10

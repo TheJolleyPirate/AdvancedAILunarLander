@@ -8,7 +8,7 @@ if __name__ == "__main__":
             novelty_name=NoveltyName.SENSOR,
             render=None,
             continuous=True,
-            train_hour=1)
+            train_hour=4)
         activity.train()
     except KeyboardInterrupt:
         print("Training activity interrupted.")
