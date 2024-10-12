@@ -99,7 +99,7 @@ def train_model(env, prev_model, prev_filename, params, model_novelty, num_episo
     # load hyperparameters
     if params is not None:
         set_hyperparameters(params, prev_model)
-    current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar, )
+    current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
     current_mean = evaluate(current_model, env, num_episodes)
 
     if current_mean > prev_mean:

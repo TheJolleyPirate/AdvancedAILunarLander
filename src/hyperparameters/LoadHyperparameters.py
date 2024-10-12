@@ -22,7 +22,6 @@ def load(file_name: Optional[str] = None):
             params.buffer_size = params_dict["buffer_size"]
             params.gamma = params_dict["gamma"]
             params.tau = params_dict["tau"]
-            params.train_freq = params_dict["train_freq"]
             params.gradient_steps = params_dict["gradient_steps"]
             params.learning_starts = params_dict["learning_starts"]
             return params

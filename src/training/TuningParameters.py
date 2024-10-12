@@ -11,7 +11,6 @@ def get_hyperparameters(model: OffPolicyAlgorithm):
         learning_rate=default_params.learning_rate if model.learning_rate is None else model.learning_rate,
         buffer_size=default_params.buffer_size if model.buffer_size is None else model.buffer_size,
         batch_size=default_params.batch_size if model.batch_size is None else model.batch_size,
-        train_freq=default_params.train_freq if model.train_freq is None else model.train_freq,
         gradient_steps=default_params.gradient_steps if model.gradient_steps is None else model.gradient_steps,
         gamma=default_params.gamma if model.gamma is None else model.gamma,
         tau=default_params.tau if model.tau is None else model.tau,
@@ -25,7 +24,6 @@ def set_hyperparameters(params: HyperParameters, model: OffPolicyAlgorithm):
     model.learning_rate = params.learning_rate
     model.buffer_size = params.buffer_size
     model.batch_size = params.batch_size
-    model.train_freq = params.train_freq
     model.gradient_steps = params.gradient_steps
     model.gamma = params.gamma
     model.tau = params.tau

@@ -39,7 +39,7 @@ class EvaluationManager:
         for i in range(len(names)):
             print("#", end="")
             self.add_model(names[i], models[i])
-        print("Evaluation complete.")
+        print("\nEvaluation complete.")
 
     def add_model(self, name, model) -> bool:
         if name in self.models.keys():
