@@ -39,7 +39,8 @@ class EvaluationManager:
         for i in range(len(names)):
             print("#", end="")
             self.add_model(names[i], models[i])
-        print("\nEvaluation complete.")
+
+        print(f"\nEvaluation complete.")
 
     def add_model(self, name, model) -> bool:
         if name in self.models.keys():
@@ -77,3 +78,8 @@ class EvaluationManager:
 
     def get_latest(self):
         return self._latest_name, self.models[self._latest_name]
+
+    def get_mean_reward(self, filename):
+        return self.performance[filename]
+
+

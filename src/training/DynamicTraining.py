@@ -49,14 +49,18 @@ class Training:
 
                 if prev_success:
                     name, model = self.model_access.get_latest()
+                    print(f"Latest model {name} is loaded.")
                 else:
                     name, model = self.model_access.get_best()
+                    print(f"Best model {name} is loaded.")
                 result = train_model(env=env,
                                      prev_model=model,
                                      prev_filename=name,
+                                     prev_mean=self.model_access.get_mean_reward(name),
                                      params=params,
                                      model_novelty=self.novelty_name)
-                self.model_access.add_model(result.filename, result.model)
+                if result.success:
+                    self.model_access.add_model(result.filename, result.model)
 
                 # Update records
                 params = result.params
@@ -86,6 +90,6 @@ class Training:
                 sleep(20)
 
             except NoModelException:
-                trainNewModel(env, self.novelty_name, params)
+                result = trainNewModel(env, self.novelty_name, params)
                 self.model_access.add_model(result.filename, result.model)
 

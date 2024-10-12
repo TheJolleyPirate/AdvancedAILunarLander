@@ -5,7 +5,6 @@ class HyperParameters:
     def __init__(
             self,
             n_timesteps: int = 50000,
-            policy: str = 'MlpPolicy',
             learning_rate: float = 0.01,
             buffer_size: int = 1_000_000,
             batch_size: int = 256,
@@ -18,7 +17,6 @@ class HyperParameters:
     ):
         self.policy_kwargs = {"net_arch": [400, 300]}
         self.n_timesteps = n_timesteps
-        self.policy = policy
         self.learning_rate = learning_rate
         self.buffer_size = buffer_size
         self.batch_size = batch_size

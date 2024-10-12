@@ -1,5 +1,5 @@
 from src.novelty.NoveltyName import NoveltyName
-from src.training.Training import Training
+from src.training.DynamicTraining import Training
 
 
 if __name__ == "__main__":

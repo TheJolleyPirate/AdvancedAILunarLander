@@ -92,9 +92,16 @@ def train_best(
     return train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
 
 
-def train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes: int = 100):
+def train_model(env,
+                prev_model,
+                prev_filename,
+                params,
+                model_novelty,
+                num_episodes: int = 100,
+                prev_mean: Optional[int] = None):
     prev_model.set_env(env)
-    prev_mean = evaluate(prev_model, env, num_episodes)
+    if prev_mean is None:
+        prev_mean = evaluate(prev_model, env, num_episodes)
 
     # load hyperparameters
     if params is not None:
@@ -107,5 +114,5 @@ def train_model(env, prev_model, prev_filename, params, model_novelty, num_episo
         return TrainingResult(current_model, get_hyperparameters(current_model), True, filename)
 
     else:
-        print("Model not saved due to non-improving average reward.")
+        print("Model not saved due to non-improving average reward. Returning previous model.")
         return TrainingResult(prev_model, get_hyperparameters(prev_model), False, prev_filename)

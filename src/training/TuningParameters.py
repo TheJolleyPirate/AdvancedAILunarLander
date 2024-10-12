@@ -1,13 +1,13 @@
+from stable_baselines3 import SAC
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
 from src.hyperparameters.Hyperparameters import HyperParameters
 
 
-def get_hyperparameters(model: OffPolicyAlgorithm):
+def get_hyperparameters(model: SAC):
     default_params = HyperParameters()
     return HyperParameters(
         n_timesteps=default_params.n_timesteps if model.num_timesteps is None else model.num_timesteps,
-        policy=default_params.policy if model.policy is None else model.policy,
         learning_rate=default_params.learning_rate if model.learning_rate is None else model.learning_rate,
         buffer_size=default_params.buffer_size if model.buffer_size is None else model.buffer_size,
         batch_size=default_params.batch_size if model.batch_size is None else model.batch_size,
@@ -18,9 +18,8 @@ def get_hyperparameters(model: OffPolicyAlgorithm):
         use_sde=default_params.use_sde if model.use_sde is None else model.use_sde)
 
 
-def set_hyperparameters(params: HyperParameters, model: OffPolicyAlgorithm):
+def set_hyperparameters(params: HyperParameters, model: SAC):
     model.num_timesteps = params.n_timesteps
-    model.policy = params.policy
     model.learning_rate = params.learning_rate
     model.buffer_size = params.buffer_size
     model.batch_size = params.batch_size

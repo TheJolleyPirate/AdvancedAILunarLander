@@ -139,12 +139,12 @@ class ModelAccess:
     def _load_models(self):
         try:
             files = _list_trained(novelty_name=self.novelty_name)
-            print(f"Adding {len(files)} files for evaluation: ", end="")
+            print(f"Adding {len(files)} file(s) for evaluation: ", end="")
             for f in files:
                 model = _load_model(self.novelty_name, f)
                 self.evaluation.add_model(f, model)
                 print("#", end="")
-            print("Evaluation complete for ModelAccess.")
+            print("\nEvaluation complete for ModelAccess.")
         except NoModelException:
             pass
 
@@ -159,4 +159,8 @@ class ModelAccess:
 
     def has_model(self):
         return self.evaluation.has_model()
+
+    def get_mean_reward(self, filename):
+        return self.evaluation.get_mean_reward(filename)
+
 
