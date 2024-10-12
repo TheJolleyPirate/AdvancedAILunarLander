@@ -30,6 +30,9 @@ class EvaluationManager:
         for name, value in self.performance.items():
             print(f" - {name} : {value}")
 
+    def has_model(self):
+        return len(self.models) > 0
+
     def add_models(self, names, models):
         assert len(names) == len(models)
         print(f"Adding {len(names)} for evaluation: ", end="")
@@ -56,6 +59,9 @@ class EvaluationManager:
             self._best_name = name
 
     def get_best(self, re_calculate: bool = False):
+        if len(self.models) == 0:
+            return None
+
         if re_calculate:
             if len(self.models) == 0:
                 return None

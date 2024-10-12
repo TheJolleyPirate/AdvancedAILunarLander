@@ -137,13 +137,16 @@ class ModelAccess:
         del self.evaluation
 
     def _load_models(self):
-        files = _list_trained(novelty_name=self.novelty_name)
-        print(f"Adding {len(files)} files for evaluation: ", end="")
-        for f in files:
-            model = _load_model(self.novelty_name, f)
-            self.evaluation.add_model(f, model)
-            print("#", end="")
-        print("Evaluation complete for ModelAccess.")
+        try:
+            files = _list_trained(novelty_name=self.novelty_name)
+            print(f"Adding {len(files)} files for evaluation: ", end="")
+            for f in files:
+                model = _load_model(self.novelty_name, f)
+                self.evaluation.add_model(f, model)
+                print("#", end="")
+            print("Evaluation complete for ModelAccess.")
+        except NoModelException:
+            pass
 
     def get_best(self):
         return self.evaluation.get_best()
@@ -153,3 +156,7 @@ class ModelAccess:
 
     def add_model(self, name, model):
         return self.evaluation.add_model(name, model)
+
+    def has_model(self):
+        return self.evaluation.has_model()
+

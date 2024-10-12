@@ -18,6 +18,8 @@ def training_activity(novel_name=NoveltyName.ORIGINAL, render = None, continuous
             sleep(20)
         except NoModelException:
             trainNewModel(novel_name, novel_name)
+            sleep(20)
+
 
 
 if __name__ == "__main__":

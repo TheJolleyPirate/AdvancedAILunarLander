@@ -44,6 +44,9 @@ class Training:
         end_time = start_time + timedelta(hours=self.train_hour)
         while datetime.now() < end_time:
             try:
+                if not self.model_access.has_model():
+                    raise NoModelException(novelty_name=self.novelty_name)
+
                 if prev_success:
                     name, model = self.model_access.get_latest()
                 else:
@@ -81,5 +84,8 @@ class Training:
                     scale_batch_size(params, 0.25)
 
                 sleep(20)
+
             except NoModelException:
-                trainNewModel(env, self.novelty_name)
+                trainNewModel(env, self.novelty_name, params)
+                self.model_access.add_model(result.filename, result.model)
+

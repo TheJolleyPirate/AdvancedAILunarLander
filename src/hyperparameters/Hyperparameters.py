@@ -4,7 +4,7 @@ from typing import Dict, Any
 class HyperParameters:
     def __init__(
             self,
-            n_timesteps: float = 50000,
+            n_timesteps: int = 50000,
             policy: str = 'MlpPolicy',
             learning_rate: float = 0.01,
             buffer_size: int = 1_000_000,

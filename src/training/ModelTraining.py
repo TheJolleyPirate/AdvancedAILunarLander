@@ -31,14 +31,12 @@ except ImportError:
     print("Progress bar disabled. To enable it, install package `tqdm`, `rich`.")
 
 
-def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
+def trainNewModel(env: gym.Env, novelty_name: NoveltyName, params: HyperParameters):
     print("Training new model for novelty: " + novelty_name.value)
 
     # if not isinstance(env, Monitor):
     #     print("Wrapping env with Monitor for presentation.")
     #     env = Monitor(env)
-
-    params = LoadHyperparameters.load("../admin/sac.yml")  # FIXME: not good practice of loading file.
 
     model = SAC(env=env,
                 batch_size=params.batch_size,
@@ -49,15 +47,16 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName):
                 learning_rate=params.learning_rate,
                 policy=params.policy,
                 policy_kwargs=params.policy_kwargs,
-                verbose=1)
+                verbose=0
+                )
 
     # By default model will reset # of timesteps, resulting 0 episodes of training
     # Hence save timesteps separately
 
     model.N_TIMESTEPS = params.n_timesteps
     model.learn(total_timesteps=model.N_TIMESTEPS, progress_bar=True)
-    save_model(model, novelty_name)
-    return model
+    filename = save_model(model, novelty_name)
+    return TrainingResult(model, get_hyperparameters(model), True, filename)
 
 
 def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
@@ -69,7 +68,7 @@ def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
 
     print("Retraining model for novelty: " + model_novelty.value)
     model = model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
-    save_model(model, model_novelty)
+    filename = save_model(model, model_novelty)
     return model
 
 
