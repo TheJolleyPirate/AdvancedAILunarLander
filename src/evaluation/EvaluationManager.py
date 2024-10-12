@@ -49,11 +49,13 @@ class EvaluationManager:
     def _evaluate(self, name, model):
         value = evaluate(model, self._env, self._n_episodes)
         self.performance[name] = value
+
+        # update best on the go
         if value > self._best_value:
             self._best_value = value
             self._best_name = name
 
-    def get_best(self, re_calculate: bool = True):
+    def get_best(self, re_calculate: bool = False):
         if re_calculate:
             if len(self.models) == 0:
                 return None

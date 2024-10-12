@@ -269,7 +269,7 @@ class CloneLunarLander(gym.Env, EzPickle):
         # new variable
         # ----------
         self.helipad_observed: bool = False
-        self.fuel: float = 2000
+        self.fuel: float = 1000
         # ----------
         self.turbulence_power = turbulence_power
 
