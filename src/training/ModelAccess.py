@@ -20,6 +20,17 @@ date_format = "%Y%m%d-%H%M%S"
 parent_folder = "models"
 
 
+def _model_path(novelty_name: NoveltyName) -> str:
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    folder_path = os.path.join(current_dir, "..", "..", parent_folder)
+    # check non-empty folder
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    # check sub-folder
+    model_path = os.path.join(folder_path, novelty_name.value)
+    return model_path
+
+
 def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName) -> str:
     # create directory
     model_path = _model_path(novelty_name)
@@ -30,16 +41,6 @@ def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName) -> str:
     complete_filename = os.path.join(model_path, filename)
     model.save(complete_filename)
     return complete_filename
-
-
-def _model_path(novelty_name: NoveltyName) -> str:
-    folder_path = os.path.join(os.getcwd(), "..", parent_folder)
-    # check non-empty folder
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    # check sub-folder
-    model_path = os.path.join(folder_path, novelty_name.value)
-    return model_path
 
 
 def _list_trained(novelty_name: NoveltyName) -> List[str]:
