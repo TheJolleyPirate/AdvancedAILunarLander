@@ -16,6 +16,7 @@ class HyperParameters:
             use_sde: bool = False,
     ):
         self.policy_kwargs = {"net_arch": [400, 300]}
+        self.policy = "MlpPolicy"
         self.n_timesteps = n_timesteps
         self.learning_rate = learning_rate
         self.buffer_size = buffer_size
@@ -27,4 +28,8 @@ class HyperParameters:
         self.learning_starts = learning_starts
         self.use_sde = use_sde
         self.MAX_LEARNING_RATE = 0.1
+
+    def get_dict(self):
+        return {"learning_rate": self.learning_rate, "batch_size": self.batch_size}
+
 

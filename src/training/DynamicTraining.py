@@ -38,7 +38,7 @@ class Training:
         recent_success = []
         recent_files = []
         queue_size = 10
-        prev_success = False
+        prev_success = True
 
         start_time = datetime.now()
         end_time = start_time + timedelta(hours=self.train_hour)
@@ -48,10 +48,10 @@ class Training:
                     raise NoModelException(novelty_name=self.novelty_name)
 
                 if prev_success:
-                    name, model = self.model_access.get_latest()
+                    name, model = self.model_access.load_latest_model()
                     print(f"Latest model {name} is loaded.")
                 else:
-                    name, model = self.model_access.get_best()
+                    name, model = self.model_access.load_best_model()
                     print(f"Best model {name} is loaded.")
                 result = train_model(env=env,
                                      prev_model=model,
@@ -74,11 +74,7 @@ class Training:
                 # Adjust hyper parameters
                 # if the same file is training all the time
                 count = [recent_files.count(s) for s in set(recent_files)]
-                if len(count) == 1:
-                    # explore
-                    scale_learning_rate(params, 1.5)
-                    scale_batch_size(params, 0.25)
-                elif any([x > queue_size / 2 for x in count]) or result.success:
+                if any([x > queue_size / 2 for x in count]) or result.success:
                     # exploit
                     scale_learning_rate(params, 0.95)
                     scale_batch_size(params, 2)
@@ -86,6 +82,7 @@ class Training:
                     # explore
                     scale_learning_rate(params, 1.5)
                     scale_batch_size(params, 0.25)
+
 
                 sleep(20)
 

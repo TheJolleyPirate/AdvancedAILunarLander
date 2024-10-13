@@ -17,9 +17,10 @@ def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100,
             action, _ = model.predict(observation, deterministic=True)
             try:
                 observation, reward, done, truncated, _ = env.step(action)
-            except RuntimeError:
+            except RuntimeError as e:
                 count_failed_eval += 1
                 reward = 0
+                print(e)
             tmp += reward
         if count_failed_eval > 0:
             print(f"Failed to evaluate this novelty for {count_failed_eval} time(s).")

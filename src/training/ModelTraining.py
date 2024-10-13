@@ -31,7 +31,7 @@ except ImportError:
     print("Progress bar disabled. To enable it, install package `tqdm`, `rich`.")
 
 
-def trainNewModel(env: gym.Env, novelty_name: NoveltyName, params: HyperParameters):
+def trainNewModel(env: gym.Env, novelty_name: NoveltyName, params: HyperParameters = HyperParameters()):
     print("Training new model for novelty: " + novelty_name.value)
 
     # if not isinstance(env, Monitor):
@@ -47,7 +47,7 @@ def trainNewModel(env: gym.Env, novelty_name: NoveltyName, params: HyperParamete
                 learning_rate=params.learning_rate,
                 policy=params.policy,
                 policy_kwargs=params.policy_kwargs,
-                verbose=0
+                verbose=1
                 )
 
     # By default model will reset # of timesteps, resulting 0 episodes of training
@@ -63,33 +63,13 @@ def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
                           model_novelty: NoveltyName = NoveltyName.ORIGINAL):
     env = NoveltyDirector(env_novelty).build_env()
 
-    model = load_best_model(model_novelty)
+    model, _ = load_latest_model(model_novelty)
     model.set_env(env)
 
     print("Retraining model for novelty: " + model_novelty.value)
-    model = model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
+    model = model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar, log_interval=10)
     filename = save_model(model, model_novelty)
     return model
-
-
-def train_last(
-        env_novelty: NoveltyName = NoveltyName.ORIGINAL,
-        model_novelty: NoveltyName = NoveltyName.ORIGINAL,
-        params: HyperParameters = Optional[None]) -> TrainingResult:
-    env = NoveltyDirector(env_novelty).build_env()
-    prev_model, prev_filename = load_latest_model(model_novelty)
-    num_episodes = 100
-    return train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
-
-
-def train_best(
-        env_novelty: NoveltyName = NoveltyName.ORIGINAL,
-        model_novelty: NoveltyName = NoveltyName.ORIGINAL,
-        params: HyperParameters = Optional[None]) -> TrainingResult:
-    env = NoveltyDirector(env_novelty).build_env()
-    prev_model, prev_filename = load_best_model(model_novelty)
-    num_episodes = 100
-    return train_model(env, prev_model, prev_filename, params, model_novelty, num_episodes)
 
 
 def train_model(env,
@@ -100,19 +80,20 @@ def train_model(env,
                 num_episodes: int = 100,
                 prev_mean: Optional[int] = None):
     prev_model.set_env(env)
+    prev_model.set_parameters(params.get_dict(), exact_match=True)
     if prev_mean is None:
         prev_mean = evaluate(prev_model, env, num_episodes)
 
-    # load hyperparameters
-    if params is not None:
-        set_hyperparameters(params, prev_model)
+    # # load hyperparameters
+    # if params is not None:
+    #     set_hyperparameters(params, prev_model)
     current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
     current_mean = evaluate(current_model, env, num_episodes)
 
-    if current_mean > prev_mean:
-        filename = save_model(current_model, model_novelty)
-        return TrainingResult(current_model, get_hyperparameters(current_model), True, filename)
+    filename = save_model(current_model, model_novelty)
+    # if current_mean > prev_mean:
+    return TrainingResult(current_model, get_hyperparameters(current_model), current_mean > prev_mean, filename)
 
-    else:
-        print("Model not saved due to non-improving average reward. Returning previous model.")
-        return TrainingResult(prev_model, get_hyperparameters(prev_model), False, prev_filename)
+    # else:
+        # print("Model not saved due to non-improving average reward. Returning previous model.")
+        # return TrainingResult(current_model, get_hyperparameters(current_model), False, filename)

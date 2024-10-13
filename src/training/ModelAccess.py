@@ -11,6 +11,7 @@ from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 from src.evaluation import ModelEvaluation
 from src.evaluation.EvaluationManager import EvaluationManager
 from src.evaluation.ModelEvaluation import evaluate
+from src.hyperparameters.Hyperparameters import HyperParameters
 from src.novelty.NoveltyDirector import NoveltyDirector
 from src.novelty.NoveltyName import NoveltyName
 from src.exceptions.NoModelException import NoModelException
@@ -32,7 +33,7 @@ def save_model(model: OffPolicyAlgorithm, novelty_name: NoveltyName) -> str:
 
 
 def _model_path(novelty_name: NoveltyName) -> str:
-    folder_path = os.path.join(os.getcwd(), "..", "..", parent_folder)
+    folder_path = os.path.join(os.getcwd(), "..", parent_folder)
     # check non-empty folder
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -54,7 +55,10 @@ def _list_trained(novelty_name: NoveltyName) -> List[str]:
     return [os.path.join(model_path, f.removesuffix(".zip")) for f in filenames]
 
 
-def _load_model(novelty_name: NoveltyName, path_name: str, verbose: bool = False) -> OffPolicyAlgorithm:
+def _load_model(novelty_name: NoveltyName,
+                path_name: str,
+                verbose: bool = False,
+                params: HyperParameters = HyperParameters()) -> OffPolicyAlgorithm:
     env = NoveltyDirector(novelty_name).build_env()
 
     if not verbose:
@@ -62,15 +66,24 @@ def _load_model(novelty_name: NoveltyName, path_name: str, verbose: bool = False
         import contextlib
         with contextlib.redirect_stdout(open(os.devnull, 'w')):
             print("This will not be printed")
-            loadedModel = SAC.load(path=path_name,
-                                   env=env,
-                                   custom_objects={'observation_space': env.observation_space,
-                                                   'action_space': env.action_space})
-    else:
-        loadedModel = SAC.load(path=path_name,
-                               env=env,
-                               custom_objects={'observation_space': env.observation_space,
-                                               'action_space': env.action_space})
+            loadedModel = SAC.load(
+                path=path_name,
+                env=env,
+                custom_objects={'observation_space': env.observation_space,
+                                'action_space': env.action_space},
+                verbose=1,
+                num_timesteps=params.n_timesteps,
+                policy=params.policy,
+                learning_rate=params.learning_rate,
+                buffer_size=params.buffer_size,
+                batch_size=params.batch_size,
+                gradient_steps=params.gradient_steps,
+                gamma=params.gamma,
+                tau=params.tau,
+                learning_starts=params.learning_starts,
+                use_sde=params.use_sde
+            )
+
     if verbose:
         print(f"Model loaded: {path_name}")
     return loadedModel
@@ -118,8 +131,11 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
     latest_filename = sorted(filenames, reverse=True)[0].removesuffix(".zip")
     p = os.path.join(model_path, latest_filename)
     env = NoveltyDirector(novelty_name).build_env()
-    loadedModel = SAC.load(path=p, env=env, custom_objects={'observation_space': env.observation_space,
-                                                            'action_space': env.action_space})
+    loadedModel = SAC.load(path=p,
+                           env=env,
+                           custom_objects={'observation_space': env.observation_space,
+                                           'action_space': env.action_space},
+                           verbose=1)
     print(f"{novelty_name.value.upper()} model loaded: {latest_filename}")
     return loadedModel
 
@@ -148,11 +164,19 @@ class ModelAccess:
         except NoModelException:
             pass
 
-    def get_best(self):
-        return self.evaluation.get_best()
+    def load_latest_model(self, params: HyperParameters = HyperParameters()) -> (str, OffPolicyAlgorithm):
+        filename = self.get_latest_name()
+        return filename, _load_model(self.novelty_name, filename, False, params)
 
-    def get_latest(self):
-        return self.evaluation.get_latest()
+    def load_best_model(self, params: HyperParameters = HyperParameters()) -> (str, OffPolicyAlgorithm):
+        filename = self.get_best_name()
+        return filename, _load_model(self.novelty_name, filename, False, params)
+
+    def get_best_name(self):
+        return self.evaluation.get_best_name()
+
+    def get_latest_name(self):
+        return self.evaluation.get_latest_name()
 
     def add_model(self, name, model):
         return self.evaluation.add_model(name, model)
@@ -162,5 +186,3 @@ class ModelAccess:
 
     def get_mean_reward(self, filename):
         return self.evaluation.get_mean_reward(filename)
-
-

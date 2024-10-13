@@ -79,6 +79,13 @@ class EvaluationManager:
     def get_latest(self):
         return self._latest_name, self.models[self._latest_name]
 
+    def get_latest_name(self):
+        return self._latest_name
+
+    def get_best_name(self):
+        return self._best_name
+
+
     def get_mean_reward(self, filename):
         return self.performance[filename]
 
