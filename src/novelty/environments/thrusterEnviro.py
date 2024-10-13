@@ -8,7 +8,7 @@ class FaultyThrusters(LunarLander):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.brokenThruster = random.randint(1, 3)
-
+        self.num_envs = 8
     def reset(self, **kwargs):
         broken = random.randint(1, 2)
         self.brokenThruster = broken
