@@ -17,7 +17,9 @@ def training_activity(novel_name=NoveltyName.ORIGINAL, render = None, continuous
             continueTrainingModel(novel_name, novel_name)
             sleep(20)
         except NoModelException:
-            trainNewModel(novel_name, novel_name)
+            trainNewModel(env, novel_name)
+            sleep(20)
+
 
 
 if __name__ == "__main__":
