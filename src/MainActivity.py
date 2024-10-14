@@ -66,6 +66,59 @@ def evaluate(model, env: LunarLander, n_episodes: int = 100):
     print(f"Standard deviation: {std_reward}")
     print(f"Min: {min(rewards)}")
     print(f"Max: {max(rewards)}")
+    return mean_reward
+
+def get_best_model(novelty, render, continuous, numEvalEpisodes):
+    # Novelties with model
+    models = [
+        NoveltyName.ORIGINAL,
+        NoveltyName.ATMOSPHERE,
+        NoveltyName.THRUSTER,
+        NoveltyName.GRAVITY,
+        NoveltyName.TURBULENCE,
+        NoveltyName.SENSOR
+    ]
+
+    env = NoveltyDirector(novelty).build_env(render_mode=render, continuous=continuous)
+
+    max_reward = float('-inf')
+    best_model = None
+
+    # load model
+    for agent in models:
+        try:
+            try:
+                # trying to get model matching agent
+                model = loadModel(agent)
+                usedModel = agent.value
+            except AttributeError:
+                # agent is None type, or string using default (novelty agent
+                model = loadModel(novelty)
+                usedModel = novelty.value
+        except NoModelException:
+            # if no model for selected agent then using default
+            print(f"no model for {agent} using default")
+            usedNovelty = NoveltyName.ORIGINAL
+            model = loadModel(usedNovelty)
+            usedModel = usedNovelty.value
+
+        print(f"Evaluating environment {novelty.name} with model {usedModel}: ...")
+        mean_reward = evaluate(model, env, numEvalEpisodes)
+        print(f"Finish evaluation. \n")
+
+        # update best model
+        if mean_reward > max_reward:
+            max_reward = mean_reward
+            best_model = agent
+
+    print(f"Best model is {best_model.value} with reward: {max_reward}")
+
+    return best_model
+
+
+
+
+
 
 
 if __name__ == '__main__':
