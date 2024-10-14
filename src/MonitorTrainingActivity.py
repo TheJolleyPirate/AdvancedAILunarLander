@@ -30,9 +30,19 @@ def monitor_training(env_novelty=NoveltyName.ORIGINAL,
                     verbose=1)
     else:
         try:
-            model = ModelAccess.loadModel(env_novelty)
-        except NoModelException:
             model = ModelAccess.loadModel(model_name)
+        except NoModelException:
+            params = LoadHyperparameters.load()
+            model = SAC(env=env,
+                        batch_size=params.batch_size,
+                        buffer_size=params.buffer_size,
+                        ent_coef=params.ent_coef,
+                        gamma=params.gamma,
+                        gradient_steps=params.gradient_steps,
+                        learning_rate=params.learning_rate,
+                        policy=params.policy,
+                        policy_kwargs=params.policy_kwargs,
+                        verbose=1)
     model.set_env(env)
     rewards = []
 
@@ -100,5 +110,5 @@ def main(target_novelty: Optional[NoveltyName] = None,
                          num_episodes=num_episodes)
 
 if __name__ == "__main__":
-    main(NoveltyName.SENSOR, NoveltyName.ORIGINAL, 100)
-    main(NoveltyName.SENSOR, NoveltyName.SENSOR, 100)
+    main(NoveltyName.GRAVITY, NoveltyName.ORIGINAL, 5000)
+    # main(NoveltyName.SENSOR, NoveltyName.SENSOR, 100)
