@@ -32,6 +32,7 @@ def set_hyperparameters(params: HyperParameters, model: SAC):
 
 def scale_learning_rate(params: HyperParameters, scaler: float):
     new_rate = params.learning_rate * scaler
+    new_rate = max(params.MIN_LEARNING_RATE, new_rate)
     new_rate = min(params.MAX_LEARNING_RATE, new_rate)
     params.learning_rate = new_rate
 

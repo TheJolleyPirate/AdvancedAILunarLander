@@ -5,7 +5,7 @@ class HyperParameters:
     def __init__(
             self,
             n_timesteps: int = 50000,
-            learning_rate: float = 0.01,
+            learning_rate: float = 0.001,
             buffer_size: int = 1_000_000,
             batch_size: int = 256,
             ent_coef: float = 0.1,
@@ -27,7 +27,8 @@ class HyperParameters:
         self.tau = tau
         self.learning_starts = learning_starts
         self.use_sde = use_sde
-        self.MAX_LEARNING_RATE = 0.1
+        self.MAX_LEARNING_RATE = 0.01
+        self.MIN_LEARNING_RATE = 1e-7
 
     def get_dict(self):
         return {"learning_rate": self.learning_rate, "batch_size": self.batch_size}

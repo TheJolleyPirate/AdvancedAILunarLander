@@ -75,12 +75,10 @@ def continueTrainingModel(env_novelty: NoveltyName = NoveltyName.ORIGINAL,
 def train_model(env,
                 prev_model,
                 prev_filename,
-                params,
                 model_novelty,
                 num_episodes: int = 100,
                 prev_mean: Optional[int] = None):
     prev_model.set_env(env)
-    prev_model.set_parameters(params.get_dict(), exact_match=True)
     if prev_mean is None:
         prev_mean = evaluate(prev_model, env, num_episodes)
 
@@ -90,10 +88,9 @@ def train_model(env,
     current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
     current_mean = evaluate(current_model, env, num_episodes)
 
-    filename = save_model(current_model, model_novelty)
-    # if current_mean > prev_mean:
-    return TrainingResult(current_model, get_hyperparameters(current_model), current_mean > prev_mean, filename)
-
-    # else:
+    if current_mean > prev_mean:
+        return TrainingResult(prev_model, get_hyperparameters(prev_model), True, prev_filename)
+    else:
+        filename = save_model(current_model, model_novelty)
         # print("Model not saved due to non-improving average reward. Returning previous model.")
-        # return TrainingResult(current_model, get_hyperparameters(current_model), False, filename)
+        return TrainingResult(current_model, get_hyperparameters(current_model), False, filename)

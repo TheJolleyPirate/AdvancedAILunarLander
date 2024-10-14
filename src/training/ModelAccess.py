@@ -187,3 +187,6 @@ class ModelAccess:
 
     def get_mean_reward(self, filename):
         return self.evaluation.get_mean_reward(filename)
+
+    def get_performance(self, filename):
+        return self.evaluation.performance[filename]

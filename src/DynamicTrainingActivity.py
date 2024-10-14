@@ -14,5 +14,5 @@ if __name__ == "__main__":
         print("Training activity interrupted.")
         del activity
         print("Destructor finished.")
-    finally:
-        del activity
+
+

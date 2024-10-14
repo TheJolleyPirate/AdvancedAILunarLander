@@ -39,28 +39,30 @@ class Training:
         recent_files = []
         queue_size = 10
         prev_success = True
+        exploit = True
 
         start_time = datetime.now()
         end_time = start_time + timedelta(hours=self.train_hour)
         while datetime.now() < end_time:
             try:
+                # Load model
                 if not self.model_access.has_model():
                     raise NoModelException(novelty_name=self.novelty_name)
 
-                if prev_success:
-                    name, model = self.model_access.load_latest_model()
+                # Re-train model
+                if prev_success or not exploit:
+                    name, model = self.model_access.load_latest_model(params)
                     print(f"Latest model {name} is loaded.")
                 else:
-                    name, model = self.model_access.load_best_model()
+                    name, model = self.model_access.load_best_model(params)
                     print(f"Best model {name} is loaded.")
                 result = train_model(env=env,
                                      prev_model=model,
                                      prev_filename=name,
                                      prev_mean=self.model_access.get_mean_reward(name),
-                                     params=params,
                                      model_novelty=self.novelty_name)
-                if result.success:
-                    self.model_access.add_model(result.filename, result.model)
+
+                self.model_access.add_model(result.filename, result.model)
 
                 # Update records
                 params = result.params
@@ -72,9 +74,18 @@ class Training:
                     recent_files.pop(0)
 
                 # Adjust hyper parameters
-                # if the same file is training all the time
                 count = [recent_files.count(s) for s in set(recent_files)]
-                if any([x > queue_size / 2 for x in count]) or result.success:
+
+                # if the same file is training all the time
+                if len(recent_success) == queue_size and len(count) == 1:
+                    exploit = False
+
+                latest_name = self.model_access.get_latest_name()
+                best_name = self.model_access.get_best_name()
+                if self.model_access.get_performance(best_name) - self.model_access.get_performance(latest_name) <= 20:
+                    prev_success = True
+
+                if exploit:
                     # exploit
                     scale_learning_rate(params, 0.95)
                     scale_batch_size(params, 2)
@@ -82,7 +93,6 @@ class Training:
                     # explore
                     scale_learning_rate(params, 1.5)
                     scale_batch_size(params, 0.25)
-
 
                 sleep(20)
 
