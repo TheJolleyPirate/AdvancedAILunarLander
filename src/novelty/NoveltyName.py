@@ -8,6 +8,13 @@ class NoveltyName (Enum):
     TURBULENCE = "turbulence"
     SENSOR = "sensor"
 
+    # Novelties from other groups
+    ASTEROID = "asteroid"
+    BLACKHOLE = "blackhole"
+    OVERHANG = "overhang"
+    TURRET = "turret"
+    WIND = "wind"
+
 def noveltyList():
     novelties = list()
     for novelty in NoveltyName:
