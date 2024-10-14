@@ -5,7 +5,7 @@ class HyperParameters:
     def __init__(
             self,
             n_timesteps: int = 50000,
-            learning_rate: float = 0.001,
+            learning_rate: float = 7.3e-4,
             buffer_size: int = 1_000_000,
             batch_size: int = 256,
             ent_coef: float = 0.1,

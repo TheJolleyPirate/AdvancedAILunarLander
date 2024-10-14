@@ -18,7 +18,7 @@ from src.training.ModelAccess import save_model, loadModel, load_best_model, loa
 from src.training.TrainingResult import TrainingResult
 from src.training.TuningParameters import set_hyperparameters, get_hyperparameters
 
-num_timesteps = 10_000
+num_timesteps = 20_000
 
 show_progress_bar = False
 try:

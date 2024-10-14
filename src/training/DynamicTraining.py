@@ -35,11 +35,10 @@ class Training:
 
         # dynamic updatable params
         params: HyperParameters = HyperParameters()
-        recent_success = []
-        recent_files = []
-        queue_size = 10
-        prev_success = True
-        exploit = True
+        recent_success, recent_files, trained_files = [], [], []
+        prev_success, exploit = True, True
+        exploration_allowed = 30
+        explore_mode_count = 0   # allow to explore for 50 times if cannot improve the previous model.
 
         start_time = datetime.now()
         end_time = start_time + timedelta(hours=self.train_hour)
@@ -56,6 +55,7 @@ class Training:
                 else:
                     name, model = self.model_access.load_best_model(params)
                     print(f"Best model {name} is loaded.")
+                trained_files.append(name)
                 result = train_model(env=env,
                                      prev_model=model,
                                      prev_filename=name,
@@ -67,23 +67,21 @@ class Training:
                 # Update records
                 params = result.params
                 prev_success = result.success
-                recent_success.append(result.success)
-                recent_files.append(result.filename)
-                if len(recent_success) > queue_size:
-                    recent_success.pop(0)
-                    recent_files.pop(0)
-
-                # Adjust hyper parameters
-                count = [recent_files.count(s) for s in set(recent_files)]
-
-                # if the same file is training all the time
-                if len(recent_success) == queue_size and len(count) == 1:
+                if explore_mode_count > 0:
                     exploit = False
+                    explore_mode_count -= 1
+                else:
+                    latest_name = self.model_access.get_latest_name()
+                    best_name = self.model_access.get_best_name()
+                    if (self.model_access.get_performance(best_name) -
+                            self.model_access.get_performance(latest_name) <= 20):
+                        prev_success = True
+                        exploit = True
 
-                latest_name = self.model_access.get_latest_name()
-                best_name = self.model_access.get_best_name()
-                if self.model_access.get_performance(best_name) - self.model_access.get_performance(latest_name) <= 20:
-                    prev_success = True
+                    if trained_files.count(best_name) == 50:
+                        params = HyperParameters()    # reset params
+                        explore_mode_count = exploration_allowed
+                        exploit = False
 
                 if exploit:
                     # exploit
