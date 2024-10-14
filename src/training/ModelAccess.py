@@ -143,11 +143,10 @@ def loadModel(novelty_name: NoveltyName) -> OffPolicyAlgorithm:
 
 class ModelAccess:
 
-    def __init__(self, novelty_name: NoveltyName):
+    def __init__(self, novelty_name: NoveltyName, num_episodes: int =100):
         self.novelty_name = novelty_name
-
         env = NoveltyDirector(novelty_name).build_env()
-        self.evaluation = EvaluationManager(env, novelty_name)
+        self.evaluation = EvaluationManager(env, novelty_name, num_episodes)
         self._load_models()
 
     def __del__(self):

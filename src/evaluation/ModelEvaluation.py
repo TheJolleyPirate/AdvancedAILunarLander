@@ -6,6 +6,8 @@ from gymnasium.envs.box2d.lunar_lander import LunarLander
 
 
 def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100, verbose: bool = False):
+    if n_episodes <= 0:
+        return 0
     rewards = []
     shape_trained = model.env.observation_space.shape[0]
     for _ in range(n_episodes):
