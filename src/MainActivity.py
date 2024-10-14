@@ -39,7 +39,8 @@ def main(novelty: NoveltyName, agent: NoveltyName, render: str, continuous: bool
         for currentNovelty in NoveltyName:
             runSingleNovelty(currentNovelty, agent, numEvalEpisodes, render, continuous)
     else:
-        runSingleNovelty(novelty, agent, numEvalEpisodes, render, continuous)
+        best_model = get_best_model(novelty, render, continuous, 3)
+        runSingleNovelty(novelty, best_model, numEvalEpisodes, render, continuous)
 
 def evaluate(model, env: LunarLander, n_episodes: int = 100):
     rewards = []
@@ -68,7 +69,9 @@ def evaluate(model, env: LunarLander, n_episodes: int = 100):
     print(f"Max: {max(rewards)}")
     return mean_reward
 
-def get_best_model(novelty, render, continuous, numEvalEpisodes):
+def get_best_model(novelty, render, continuous, numEvalEpisodes: int = 3):
+    print(f"Determining best model on Environment: {novelty.value} ...")
+
     # Novelties with model
     models = [
         NoveltyName.ORIGINAL,
