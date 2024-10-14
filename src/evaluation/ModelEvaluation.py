@@ -1,5 +1,4 @@
 import statistics
-import gymnasium as gym
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 from src.Util import adapt_observation
 from gymnasium.envs.box2d.lunar_lander import LunarLander
