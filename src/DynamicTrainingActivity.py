@@ -11,8 +11,14 @@ if __name__ == "__main__":
             train_hour=4)
         dynamic_training.train()
     except KeyboardInterrupt:
+        print("Program stopped by keyboard")
+    finally:
         print("Training activity interrupted.")
-        del dynamic_training
-        print("Destructor finished.")
+        try:
+            del dynamic_training
+            print("Destructor finished.")
+        except NameError:
+            print("No model is evaluated.")
+
 
 
