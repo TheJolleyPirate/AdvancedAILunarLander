@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="fedc97e3-6958-46ab-ad59-e8b5003d95c5" name="Changes" comment="Train baseline on Atmosphere novelty">
+      <change beforePath="$PROJECT_DIR$/src/TrainingActivity.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/TrainingActivity.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="fomaml" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;pdsla112&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/TheJolleyPirate/AdvancedAILunarLander.git&quot;,
+    &quot;accountId&quot;: &quot;df2a168f-c11a-455e-80bf-d2d667091aae&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2kJCnYjNyOZHw4VcJwpZfXMZOQt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.BaselineTrainingAtmosphere.executor&quot;: &quot;Run&quot;,
+    &quot;Python.LimitedSensor.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MainActivity.executor&quot;: &quot;Run&quot;,
+    &quot;Python.ModelAccess.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.NoveltyDirector.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TrainingActivity.executor&quot;: &quot;Run&quot;,
+    &quot;Python.TrainingMultiTaskLearning.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/phillipla/PycharmProjects/AdvancedAILunarLander&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="MainActivity" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="AdvancedAILunarLander" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/MainActivity.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.MainActivity" />
+        <item itemvalue="Python.MainActivity" />
+        <item itemvalue="Python.MainActivity" />
+        <item itemvalue="Python.MainActivity" />
+        <item itemvalue="Python.MainActivity" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="fedc97e3-6958-46ab-ad59-e8b5003d95c5" name="Changes" comment="" />
+      <created>1722992460240</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1722992460240</updated>
+      <workItem from="1722992461347" duration="353000" />
+      <workItem from="1722992821011" duration="2432000" />
+      <workItem from="1724397936700" duration="1871000" />
+      <workItem from="1724400936918" duration="33876000" />
+      <workItem from="1728347553484" duration="15773000" />
+      <workItem from="1728370706714" duration="908000" />
+      <workItem from="1728856939008" duration="4975000" />
+      <workItem from="1728953712416" duration="220000" />
+      <workItem from="1728953937716" duration="2765000" />
+    </task>
+    <task id="LOCAL-00001" summary="Fix loading model on mac">
+      <option name="closed" value="true" />
+      <created>1722994030828</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722994030828</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add new directory and file for novelty implementation">
+      <option name="closed" value="true" />
+      <created>1724413229170</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1724413229170</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Refactor code and remove syntactic errors">
+      <option name="closed" value="true" />
+      <created>1724420069222</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1724420069222</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Implement GUI for atmosphere line">
+      <option name="closed" value="true" />
+      <created>1724429441781</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1724429441781</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Implement custom step function to add physics to atmosphere line">
+      <option name="closed" value="true" />
+      <created>1724557238728</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1724557238728</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Remove comment">
+      <option name="closed" value="true" />
+      <created>1724742463966</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1724742463968</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Implement randomised multitask learning model">
+      <option name="closed" value="true" />
+      <created>1728369394410</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1728369394410</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Implement randomised multitask learning model">
+      <option name="closed" value="true" />
+      <created>1728369473851</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1728369473851</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Train baseline on Atmosphere novelty">
+      <option name="closed" value="true" />
+      <created>1728953805273</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1728953805273</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Fix loading model on mac" />
+    <MESSAGE value="Add new directory and file for novelty implementation" />
+    <MESSAGE value="Refactor code and remove syntactic errors" />
+    <MESSAGE value="Implement GUI for atmosphere line" />
+    <MESSAGE value="Implement custom step function to add physics to atmosphere line" />
+    <MESSAGE value="Remove comment" />
+    <MESSAGE value="Implement randomised multitask learning model" />
+    <MESSAGE value="Train baseline on Atmosphere novelty" />
+    <option name="LAST_COMMIT_MESSAGE" value="Train baseline on Atmosphere novelty" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$BaselineTrainingAtmosphere.coverage" NAME="BaselineTrainingAtmosphere Coverage Results" MODIFIED="1728858976287" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$TrainingActivity.coverage" NAME="TrainingActivity Coverage Results" MODIFIED="1728956057883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$LimitedSensor.coverage" NAME="LimitedSensor Coverage Results" MODIFIED="1728355560980" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Novelty/environments/limited_sensor" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$TrainingMultiTaskLearning.coverage" NAME="TrainingMultiTaskLearning Coverage Results" MODIFIED="1728355645324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$MainActivity.coverage" NAME="MainActivity Coverage Results" MODIFIED="1728956291550" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$ModelAccess.coverage" NAME="ModelAccess Coverage Results" MODIFIED="1722993633487" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/training" />
+    <SUITE FILE_PATH="coverage/AdvancedAILunarLander$NoveltyDirector.coverage" NAME="NoveltyDirector Coverage Results" MODIFIED="1728956090840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/Novelty" />
+  </component>
+</project>

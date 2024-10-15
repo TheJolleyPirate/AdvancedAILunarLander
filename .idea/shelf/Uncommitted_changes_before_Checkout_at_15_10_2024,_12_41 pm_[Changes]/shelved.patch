@@ -1,0 +1,21 @@
+Index: src/TrainingActivity.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import argparse\nfrom datetime import datetime, timedelta\nfrom time import sleep\nfrom src.novelty.NoveltyName import NoveltyName, noveltyList\nfrom src.novelty.NoveltyDirector import NoveltyDirector\nfrom src.exceptions.NoModelException import NoModelException\nfrom src.training.ModelTraining import continueTrainingModel, trainNewModel\n\n\n\ndef training_activity(novel_name=NoveltyName.ORIGINAL, render = None, continuous = True, trainTime = 4):\n    env = NoveltyDirector(novel_name).build_env(render, continuous)\n    start_time = datetime.now()\n    end_time = start_time + timedelta(hours=trainTime)\n    while datetime.now() < end_time:\n        try:\n            continueTrainingModel(novel_name, novel_name)\n            sleep(20)\n        except NoModelException:\n            trainNewModel(novel_name, novel_name)\n\n\nif __name__ == \"__main__\":\n    #USAGE:\n    #       python TrainingActivity.py\n    #       python TrainingActivity.py -n \"NOVELTY\"\n    # or    python TrainingActivity.py -n \"NOVELTY\" -r \"render_mode\"\n    # or    python TrainingActivity.py -nc\n    # or    python TrainingActivity.py -n \"NOVELTY\" -nc\n    # or    python TrainingActivity.py -n \"NOVELTY\" -r \"render_mode\" -nc\n\n    parser = argparse.ArgumentParser(prog=\"TrainingActivity\",\n                                     description=\"the training activity to train the agents, can be trained on \"\n                                                 \"multiple different novelties\")\n    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI\n    defaultNovelty = NoveltyName.ORIGINAL\n    allowedNovelties = noveltyList()\n    parser.add_argument(\"-n\", \"--novelty\", default=defaultNovelty, choices=allowedNovelties,\n                        help=\"the novelty you want to train the agent on\")\n    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI\n    defaultRender = None\n    allowedRenders = [None, \"human\"]\n    parser.add_argument(\"-r\", \"--render_mode\", default=defaultRender, choices=allowedRenders,\n                        help=\"the render mode you want to use\")\n    # CHANGE THIS IF YOU DON'T WANT TO USE THE CLI\n    defaultContinous = True\n    parser.add_argument(\"-nc\", \"--not_continuous\", action=\"store_true\", default=(not defaultContinous),\n                        help=\"set this if you want the agent to be non-continuous (discrete)\")\n    parser.add_argument(\"-t\", \"--training_time\", type=int, default=4,\n                        help=\"the amount of time to train the for; default 4\")\n    args = parser.parse_args()\n    noveltyName = args.novelty\n    trainingNovelty = defaultNovelty\n    for n in NoveltyName:\n        if n.value == noveltyName:\n            trainingNovelty = n\n    trainingRenderMode = args.render_mode\n    trainingContinuous = not args.not_continuous\n    trainingTime = args.training_time\n    training_activity(trainingNovelty, trainingRenderMode, trainingContinuous, trainingTime)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/TrainingActivity.py b/src/TrainingActivity.py
+--- a/src/TrainingActivity.py	(revision c19f2061cb037b4cc2f4db2c27c86f169fdda234)
++++ b/src/TrainingActivity.py	(date 1728956057874)
+@@ -1,8 +1,8 @@
+ import argparse
+ from datetime import datetime, timedelta
+ from time import sleep
+-from src.novelty.NoveltyName import NoveltyName, noveltyList
+-from src.novelty.NoveltyDirector import NoveltyDirector
++from src.Novelty.NoveltyName import NoveltyName, noveltyList
++from src.Novelty.NoveltyDirector import NoveltyDirector
+ from src.exceptions.NoModelException import NoModelException
+ from src.training.ModelTraining import continueTrainingModel, trainNewModel
+ 
