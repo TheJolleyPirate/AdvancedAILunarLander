@@ -1,8 +1,8 @@
 import argparse
 from datetime import datetime, timedelta
 from time import sleep
-from src.novelty.NoveltyName import NoveltyName, noveltyList
-from src.novelty.NoveltyDirector import NoveltyDirector
+from src.Novelty.NoveltyName import NoveltyName, noveltyList
+from src.Novelty.NoveltyDirector import NoveltyDirector
 from src.exceptions.NoModelException import NoModelException
 from src.training.ModelTraining import continueTrainingModel, trainNewModel
 
