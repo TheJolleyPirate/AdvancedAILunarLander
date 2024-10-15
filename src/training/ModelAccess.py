@@ -170,6 +170,8 @@ class ModelAccess:
 
     def load_best_model(self, params: HyperParameters = HyperParameters()) -> (str, OffPolicyAlgorithm):
         filename = self.get_best_name()
+        if filename is None or filename == "":
+            raise NoModelException(self.novelty_name)
         return filename, _load_model(self.novelty_name, filename, False, params)
 
     def get_best_name(self):

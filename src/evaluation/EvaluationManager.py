@@ -22,9 +22,11 @@ class EvaluationManager:
         print(f"EvaluationManager for {self._novelty_name.value} created.")
 
     def __del__(self):
-        print(f"EvaluationManager for {self._novelty_name.value} is closed: \n "
-              f" - Latest model: {self._latest_name}, (mean: {self.performance[self._latest_name]}) \n"
-              f" - Best model: {self._best_name}, (mean: {self.performance[self._best_name]})")
+        print(f"EvaluationManager for {self._novelty_name.value} is closed:")
+        if self._latest_name in self.performance:
+            print (f" - Latest model: {self._latest_name}, (mean: {self.performance[self._latest_name]})")
+        if self._best_name in self.performance:
+            print(f" - Best model: {self._best_name}, (mean: {self.performance[self._best_name]})")
 
         print("Detailed performance as following: ")
         for name, value in self.performance.items():
