@@ -25,7 +25,8 @@ class MergeModel:
         for novelty in NoveltyName:
             try:
                 filename, model = self.models[novelty].load_best_model()
-                mean = evaluate(model, evaluating_env, self.detecting_episodes)
+                mean, std_reward, min_reward, max_reward = evaluate(model, evaluating_env, 20)
+                # mean = evaluate(model, evaluating_env, self.detecting_episodes)
                 total_rewards += mean * self.detecting_episodes
                 if mean > best_record:
                     best_record = mean
@@ -48,11 +49,14 @@ def main():
         print(f"Evaluating environment {novelty.value.upper()} against all merged models")
         evaluating_env = NoveltyDirector(novelty).build_env(render_mode=None, continuous=True)
         model, model_name, detecting_rewards = merge_model.detect(evaluating_env)
-        evaluated_mean = evaluate(model, evaluating_env, evaluating_episodes, False)
+        evaluated_mean, std_reward, min_reward, max_reward = evaluate(model, evaluating_env, evaluating_episodes, False)
         total_rewards = evaluated_mean * evaluating_episodes + detecting_rewards
         mean = total_rewards / total_num_episodes
-        print(f"Mean {round(mean, 2)} achieved by {model_name}")
-
+        print(f"Achieved by {model_name}")
+        print(f"Mean: {round(mean, 2)}")
+        print(f"Standard deviation: {std_reward}")
+        print(f"Min: {min_reward}")
+        print(f"Max: {max_reward}")
 
 if __name__ == "__main__":
     main()

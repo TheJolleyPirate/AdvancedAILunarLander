@@ -36,4 +36,4 @@ def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100,
         print(f"Min: {min(rewards)}")
         print(f"Max: {max(rewards)}")
 
-    return mean_reward
+    return mean_reward, std_reward, min(rewards), max(rewards)

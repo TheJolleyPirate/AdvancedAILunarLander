@@ -53,7 +53,8 @@ class EvaluationManager:
         return True
 
     def _evaluate(self, name, model):
-        value = evaluate(model, self._env, self._n_episodes)
+        # value = evaluate(model, self._env, self._n_episodes)
+        value, std_reward, min_reward, max_reward = evaluate(model, self._env, self._n_episodes)
         self.performance[name] = value
 
         # update best on the go

@@ -9,6 +9,12 @@ from src.novelty.environments.gravityEnvironment import GravityLunarLander
 from src.novelty.environments.limited_sensor.LimitedSensor import LimitedSensor
 from src.novelty.environments.thrusterEnviro import FaultyThrusters
 
+from src.novelty.environments.lunar_lander_asteroid import LunarLanderAsteroidNovelty
+from src.novelty.environments.lunar_lander_turret import LunarLanderTurret
+from src.novelty.environments.lunar_lander_overhang import LunarLanderOverhang
+from src.novelty.environments.lunar_lander_blackhole import LunarLanderForce
+from src.novelty.environments.lunar_lander_windy_chasms import LunarLanderWindyChasms
+
 
 class NoveltyDirector:
 
@@ -32,5 +38,16 @@ class NoveltyDirector:
             return TurbulenceEnv(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.SENSOR:
             return LimitedSensor(render_mode=render_mode, continuous=continuous)
+        # Novelties from other teams
+        if self.novelty == NoveltyName.ASTEROID:
+            return LunarLanderAsteroidNovelty(render_mode=render_mode, continuous=continuous)
+        if self.novelty == NoveltyName.BLACKHOLE:
+            return LunarLanderForce(render_mode=render_mode, continuous=continuous)
+        if self.novelty == NoveltyName.WIND:
+            return LunarLanderWindyChasms(render_mode=render_mode, continuous=continuous)
+        if self.novelty == NoveltyName.TURRET:
+            return LunarLanderTurret(render_mode=render_mode, continuous=continuous)
+        if self.novelty == NoveltyName.OVERHANG:
+            return LunarLanderOverhang(render_mode=render_mode, continuous=continuous)
         else:
             return gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous)
