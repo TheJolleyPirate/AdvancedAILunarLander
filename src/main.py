@@ -44,10 +44,11 @@ def main():
     evaluating_episodes = total_num_episodes - detecting_episodes * len(NoveltyName)
     merge_model = MergeModel(detecting_episodes)
     for novelty in NoveltyName:
-        print(f"Evaluating environment {novelty.value} against all merged models")
+        print(" ----------------- ")
+        print(f"Evaluating environment {novelty.value.upper()} against all merged models")
         evaluating_env = NoveltyDirector(novelty).build_env(render_mode=None, continuous=True)
         model, model_name, detecting_rewards = merge_model.detect(evaluating_env)
-        evaluated_mean = evaluate(model, evaluating_env, evaluating_episodes, True)
+        evaluated_mean = evaluate(model, evaluating_env, evaluating_episodes, False)
         total_rewards = evaluated_mean * evaluating_episodes + detecting_rewards
         mean = total_rewards / total_num_episodes
         print(f"Mean {round(mean, 2)} achieved by {model_name}")
