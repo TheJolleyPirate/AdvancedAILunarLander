@@ -1,6 +1,7 @@
 import sys
 
 from gymnasium.envs.box2d import LunarLander
+from sympy.logic.boolalg import to_anf
 
 from src.evaluation.ModelEvaluation import evaluate
 from src.exceptions.NoModelException import NoModelException
@@ -19,17 +20,21 @@ class MergeModel:
     def detect(self, evaluating_env):
         best_record = 1 - sys.maxsize
         best_model = None
+        best_model_name = ""
+        total_rewards = 0
         for novelty in NoveltyName:
             try:
-                model = self.models[novelty].load_best_model()
+                filename, model = self.models[novelty].load_best_model()
                 mean = evaluate(model, evaluating_env, self.detecting_episodes)
+                total_rewards += mean * self.detecting_episodes
                 if mean > best_record:
                     best_record = mean
                     best_model = model
+                    best_model_name = filename
             except NoModelException as e:
                 print(e.message)
 
-        return best_model
+        return best_model, best_model_name, total_rewards
 
 
 def main():
@@ -41,8 +46,11 @@ def main():
     for novelty in NoveltyName:
         print(f"Evaluating environment {novelty.value} against all merged models")
         evaluating_env = NoveltyDirector(novelty).build_env(render_mode=None, continuous=True)
-        model = merge_model.detect(evaluating_env)
-        evaluate(model, evaluating_env, evaluating_episodes, True)
+        model, model_name, detecting_rewards = merge_model.detect(evaluating_env)
+        evaluated_mean = evaluate(model, evaluating_env, evaluating_episodes, True)
+        total_rewards = evaluated_mean * evaluating_episodes + detecting_rewards
+        mean = total_rewards / total_num_episodes
+        print(f"Mean {round(mean, 2)} achieved by {model_name}")
 
 
 if __name__ == "__main__":
