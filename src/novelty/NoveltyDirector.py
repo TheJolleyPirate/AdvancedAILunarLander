@@ -15,6 +15,12 @@ from src.novelty.environments.lunar_lander_overhang import LunarLanderOverhang
 from src.novelty.environments.lunar_lander_blackhole import LunarLanderForce
 from src.novelty.environments.lunar_lander_windy_chasms import LunarLanderWindyChasms
 
+from src.novelty.environments.delay_env import ActionDelayWrapper
+from src.novelty.environments.dust_and_static_effect import DustAndstaticEffectWrapper
+from src.novelty.environments.micrometeorite_event import MicrometeoriteEventWrapper
+from src.novelty.environments.reduced_visibility_env import DustVisibilityWrapper
+
+
 
 class NoveltyDirector:
 
@@ -28,6 +34,8 @@ class NoveltyDirector:
         return env
 
     def _find_env(self, render_mode=None, continuous: bool = True):
+
+
         if self.novelty == NoveltyName.THRUSTER:
             return FaultyThrusters(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.ATMOSPHERE:
@@ -49,5 +57,19 @@ class NoveltyDirector:
             return LunarLanderTurret(render_mode=render_mode, continuous=continuous)
         if self.novelty == NoveltyName.OVERHANG:
             return LunarLanderOverhang(render_mode=render_mode, continuous=continuous)
+
+        # environment wrappers
+        env = gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous)
+        env = Monitor(env)
+        if self.novelty == NoveltyName.DELAY:
+            return ActionDelayWrapper(env)
+        if self.novelty == NoveltyName.DUST_STATIC:
+            return DustAndstaticEffectWrapper(env)
+        if self.novelty == NoveltyName.MICROMETEORITE:
+            return MicrometeoriteEventWrapper(env)
+        if self.novelty == NoveltyName.REDUCED_VISIBILITY:
+            return DustVisibilityWrapper(env)
+
+        # original environment
         else:
             return gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous)
