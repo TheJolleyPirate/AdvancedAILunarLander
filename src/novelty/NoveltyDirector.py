@@ -1,4 +1,4 @@
-from src.novelty.NoveltyName import NoveltyName
+from src.novelty.NoveltyName import NoveltyName, TeamNovelty, OtherNovelty
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
@@ -21,10 +21,9 @@ from src.novelty.environments.micrometeorite_event import MicrometeoriteEventWra
 from src.novelty.environments.reduced_visibility_env import DustVisibilityWrapper
 
 
-
 class NoveltyDirector:
 
-    def __init__(self, novelty: NoveltyName = NoveltyName.ORIGINAL):
+    def __init__(self, novelty: NoveltyName = TeamNovelty.ORIGINAL):
         self.novelty = novelty
 
     def build_env(self, render_mode=None, continuous: bool = True):
@@ -35,39 +34,38 @@ class NoveltyDirector:
 
     def _find_env(self, render_mode=None, continuous: bool = True):
 
-
-        if self.novelty == NoveltyName.THRUSTER:
+        if self.novelty == TeamNovelty.THRUSTER:
             return FaultyThrusters(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.ATMOSPHERE:
+        if self.novelty == TeamNovelty.ATMOSPHERE:
             return AtmosphereLunarLander(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.GRAVITY:
+        if self.novelty == TeamNovelty.GRAVITY:
             return GravityLunarLander(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.TURBULENCE:
+        if self.novelty == TeamNovelty.TURBULENCE:
             return TurbulenceEnv(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.SENSOR:
+        if self.novelty == TeamNovelty.SENSOR:
             return LimitedSensor(render_mode=render_mode, continuous=continuous)
         # Novelties from other teams
-        if self.novelty == NoveltyName.ASTEROID:
+        if self.novelty == OtherNovelty.ASTEROID:
             return LunarLanderAsteroidNovelty(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.BLACKHOLE:
+        if self.novelty == OtherNovelty.BLACKHOLE:
             return LunarLanderForce(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.WIND:
+        if self.novelty == OtherNovelty.WIND:
             return LunarLanderWindyChasms(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.TURRET:
+        if self.novelty == OtherNovelty.TURRET:
             return LunarLanderTurret(render_mode=render_mode, continuous=continuous)
-        if self.novelty == NoveltyName.OVERHANG:
+        if self.novelty == OtherNovelty.OVERHANG:
             return LunarLanderOverhang(render_mode=render_mode, continuous=continuous)
 
         # environment wrappers
         env = gym.make("LunarLander-v2", render_mode=render_mode, continuous=continuous)
         env = Monitor(env)
-        if self.novelty == NoveltyName.DELAY:
+        if self.novelty == OtherNovelty.DELAY:
             return ActionDelayWrapper(env)
-        if self.novelty == NoveltyName.DUST_STATIC:
+        if self.novelty == OtherNovelty.DUST_STATIC:
             return DustAndstaticEffectWrapper(env)
-        if self.novelty == NoveltyName.MICROMETEORITE:
+        if self.novelty == OtherNovelty.MICROMETEORITE:
             return MicrometeoriteEventWrapper(env)
-        if self.novelty == NoveltyName.REDUCED_VISIBILITY:
+        if self.novelty == OtherNovelty.REDUCED_VISIBILITY:
             return DustVisibilityWrapper(env)
 
         # original environment

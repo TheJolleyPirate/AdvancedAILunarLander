@@ -1,6 +1,11 @@
 from enum import Enum
 
-class NoveltyName (Enum):
+
+class NoveltyName(Enum):
+    pass
+
+
+class TeamNovelty(NoveltyName):
     ORIGINAL = "original"
     ATMOSPHERE = "atmosphere"
     THRUSTER = "thruster"
@@ -8,6 +13,8 @@ class NoveltyName (Enum):
     TURBULENCE = "turbulence"
     SENSOR = "sensor"
 
+
+class OtherNovelty(NoveltyName):
     # Novelties from other groups
     ASTEROID = "asteroid"
     BLACKHOLE = "blackhole"
@@ -19,6 +26,7 @@ class NoveltyName (Enum):
     DUST_STATIC = "dust_static"
     MICROMETEORITE = "micrometeorite"
     REDUCED_VISIBILITY = "reduced_visibility"
+
 
 def noveltyList():
     novelties = list()
