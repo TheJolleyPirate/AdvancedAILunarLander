@@ -80,13 +80,13 @@ def train_model(env,
                 prev_mean: Optional[int] = None):
     prev_model.set_env(env)
     if prev_mean is None:
-        prev_mean = evaluate(prev_model, env, num_episodes)
+        prev_mean = evaluate(prev_model, env, num_episodes).mean
 
     # # load hyperparameters
     # if params is not None:
     #     set_hyperparameters(params, prev_model)
     current_model = prev_model.learn(total_timesteps=num_timesteps, progress_bar=show_progress_bar)
-    current_mean = evaluate(current_model, env, num_episodes)
+    current_mean = evaluate(current_model, env, num_episodes).mean
 
     if current_mean > prev_mean:
         return TrainingResult(prev_model, get_hyperparameters(prev_model), True, prev_filename)

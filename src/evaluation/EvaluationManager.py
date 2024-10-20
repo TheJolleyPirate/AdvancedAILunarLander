@@ -4,6 +4,7 @@ from typing import Dict
 from gymnasium.envs.box2d import LunarLander
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 
+from src.evaluation.EvaluationResult import EvaluationResult
 from src.evaluation.ModelEvaluation import evaluate
 from src.novelty.NoveltyName import NoveltyName
 
@@ -54,12 +55,12 @@ class EvaluationManager:
 
     def _evaluate(self, name, model):
         # value = evaluate(model, self._env, self._n_episodes)
-        value, std_reward, min_reward, max_reward = evaluate(model, self._env, self._n_episodes)
-        self.performance[name] = value
+        evaluation_result: EvaluationResult = evaluate(model, self._env, self._n_episodes)
+        self.performance[name] = evaluation_result.mean
 
         # update best on the go
-        if value > self._best_value:
-            self._best_value = value
+        if evaluation_result.mean > self._best_value:
+            self._best_value = evaluation_result.mean
             self._best_name = name
 
     def get_best(self, re_calculate: bool = False):

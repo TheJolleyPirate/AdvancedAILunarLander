@@ -3,6 +3,7 @@ import sys
 from gymnasium.envs.box2d import LunarLander
 from sympy.logic.boolalg import to_anf
 
+from src.evaluation.EvaluationResult import EvaluationResult
 from src.evaluation.ModelEvaluation import evaluate
 from src.exceptions.NoModelException import NoModelException
 from src.novelty.NoveltyDirector import NoveltyDirector
@@ -25,11 +26,11 @@ class MergeModel:
         for novelty in NoveltyName:
             try:
                 filename, model = self.models[novelty].load_best_model()
-                mean, std_reward, min_reward, max_reward = evaluate(model, evaluating_env, 20)
+                evaluation_result: EvaluationResult = evaluate(model, evaluating_env, 20)
                 # mean = evaluate(model, evaluating_env, self.detecting_episodes)
-                total_rewards += mean * self.detecting_episodes
-                if mean > best_record:
-                    best_record = mean
+                total_rewards += evaluation_result.mean * self.detecting_episodes
+                if evaluation_result.mean > best_record:
+                    best_record = evaluation_result.mean
                     best_model = model
                     best_model_name = filename
             except NoModelException as e:
@@ -39,7 +40,7 @@ class MergeModel:
 
 
 def main():
-    total_num_episodes = 100
+    total_num_episodes = 20
     percentage_detect = 0.05
     detecting_episodes = int(total_num_episodes * percentage_detect / len(NoveltyName))
     evaluating_episodes = total_num_episodes - detecting_episodes * len(NoveltyName)
@@ -57,6 +58,8 @@ def main():
         print(f"Standard deviation: {std_reward}")
         print(f"Min: {min_reward}")
         print(f"Max: {max_reward}")
+
+
 
 if __name__ == "__main__":
     main()

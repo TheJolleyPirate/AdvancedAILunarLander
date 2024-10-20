@@ -107,7 +107,7 @@ def load_best_model(novelty_name: NoveltyName) -> (OffPolicyAlgorithm, str):
     # find index of best model.
     for i in range(len(files)):
         model = _load_model(novelty_name, files[i])
-        mean = evaluate(model, env)
+        mean = evaluate(model, env).mean
         if mean > best_mean:
             target = i
             best_mean = mean

@@ -3,6 +3,8 @@ from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 from src.Util import adapt_observation
 from gymnasium.envs.box2d.lunar_lander import LunarLander
 
+from src.evaluation.EvaluationResult import EvaluationResult
+
 
 def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100, verbose: bool = False):
     if n_episodes <= 0:
@@ -36,4 +38,4 @@ def evaluate(model: OffPolicyAlgorithm, env: LunarLander, n_episodes: int = 100,
         print(f"Min: {min(rewards)}")
         print(f"Max: {max(rewards)}")
 
-    return mean_reward, std_reward, min(rewards), max(rewards)
+    return EvaluationResult(rewards, mean_reward, std_reward)
